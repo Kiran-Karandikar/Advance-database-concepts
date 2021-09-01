@@ -1,0 +1,123 @@
+
+Problem 2
+ pid  | pname 
+------+-------
+ 1008 | Emma
+ 1009 | Hasan
+ 1014 | Deepa
+(3 rows)
+
+Problem 3
+ cname | cname 
+-------+-------
+ ACM   | IBM
+ IBM   | ACM
+(2 rows)
+
+Problem 4
+ pid  | pname 
+------+-------
+ 1006 | Ryan
+ 1008 | Emma
+ 1009 | Hasan
+ 1010 | Linda
+ 1013 | Lisa
+ 1014 | Deepa
+ 1015 | Chris
+ 1017 | Latha
+(8 rows)
+
+Problem 5
+   skill   
+-----------
+ Databases
+(1 row)
+
+Problem 6
+ pid  | pname  | salary 
+------+--------+--------
+ 1016 | YinYue |  55000
+(1 row)
+
+Problem 7
+   cname   
+-----------
+ Amazon
+ Apple
+ Microsoft
+ Netflix
+(4 rows)
+
+Problem 8
+   cname   | salary 
+-----------+--------
+ Amazon    |  60000
+ Apple     |  65000
+ Google    |  70000
+ Microsoft |  50000
+ Netflix   |  60000
+(5 rows)
+
+Problem 9
+ pid  | pname 
+------+-------
+ 1010 | Linda
+ 1013 | Lisa
+ 1015 | Chris
+ 1017 | Latha
+(4 rows)
+
+Problem 10
+ pid  | pname | cname  | salary 
+------+-------+--------+--------
+ 1008 | Emma  | Amazon |  50000
+(1 row)
+
+Problem 11
+ pid  | pname 
+------+-------
+ 1017 | Latha
+(1 row)
+
+Problem 12
+    skill    
+-------------
+ Programming
+ Databases
+(2 rows)
+
+Problem 13
+ pid  | pname  
+------+--------
+ 1002 | Vidya
+ 1005 | Megan
+ 1006 | Ryan
+ 1009 | Hasan
+ 1010 | Linda
+ 1011 | Nick
+ 1014 | Deepa
+ 1016 | YinYue
+ 1017 | Latha
+ 1018 | Arif
+ 1019 | John
+(11 rows)
+
+Problem 18
+ constraintSatisfied 
+---------------------
+ f
+(1 row)
+
+Problem 19
+ constraintSatisfied 
+---------------------
+ t
+(1 row)
+
+Problem 20
+ constaintSatisfied 
+--------------------
+ t
+(1 row)
+
+
