@@ -215,6 +215,66 @@ DROP DATABASE kiran_karandikar;
 
 \qecho 'Problem 1 conceptual example 1'
 
+
+-- Here we will look into the realtion between skill and personskill
+	select * from skill;
+	select * from personskill;
+	
+	select * from skill s where s.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
+	
+	-- Example 1:
+	-- Deletion of primary key not allowed.
+	-- ERROR:  update or delete on table "skill" violates foreign key constraint "personskill_skill_fkey" on table "personskill"
+	-- DETAIL:  Key (skill)=(Networks) is still referenced from table "personskill".
+	delete from skill s where s.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
+	
+	-- Example 2:
+	-- Insert not allowed in realtion since primary key is not present.
+	-- ERROR:  insert or update on table "personskill" violates foreign key constraint "personskill_pid_fkey"
+	-- DETAIL:  Key (pid)=(1050) is not present in table "person".
+	insert into personskill values (1050, 'Visualization');
+	
+	-- Example 3
+	-- Deletion of keys in relation does not affect parent data.
+	select * from skill s where s.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
+	delete from personskill ps where ps.skill='Networks' and ps.pid=1010;
+	select * from skill s where s.skill='Networks';
+	
+	-- Example 4:
+	-- Altering primary key in parent table 
+	-- Adding constarint on delte cascade
+	ALTER TABLE personskill DROP CONSTRAINT "personskill_skill_fkey";
+	ALTER TABLE personskill ADD CONSTRAINT "personskill_skill_fkey" foreign key (skill) references skill(skill) ON DELETE CASCADE;
+
+	select * from personskill ps where ps.skill='Networks';
+	select * from skill s where s.skill='Networks';
+	delete from skill s where s.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
+	
+
+
+	
+	--- Reverting back the tables
+	ALTER TABLE personskill DROP CONSTRAINT "personskill_skill_fkey";
+	ALTER TABLE personskill ADD CONSTRAINT "personskill_skill_fkey" foreign key (skill) references skill(skill);
+	
+	
+	INSERT INTO Skill VALUES ('Networks') Except (select * from skill s where s.skill='Networks');
+	INSERT INTO personskill values 
+	 (1005,'Networks'),
+	 (1009,'Networks'),
+	 (1010,'Networks'),
+ 	(1011,'Networks'),
+	 (1013,'Networks'),
+	  (1014,'Networks'),
+	   (1017,'Networks'),
+	    (1019,'Networks')
+		
+
+
 \qecho 'Problem 1 conceptual example 2'
 
 \qecho 'Problem 1 conceptual example 3'
