@@ -186,45 +186,62 @@ INSERT INTO hasManager VALUES
  (1014, 1012);
 
 
-\qecho 'Problem 1'
-\qecho 'Problem 1 conceptual example 1'
-\qecho 'Deletion of primary key not allowed.'
+\c postgres;
+DROP DATABASE kiran_karandikar;
 
-	-- select * from skill;
-	-- select * from personskill;
-	-- 
-	-- select * from skill s where s.skill='Networks';
-	-- select * from personskill ps where ps.skill='Networks';
+-------------------------------------------------------------------------
+-- Done till here
+-- Drop these 2 statments above
+-------------------------------------------------------------------------
+
+
+
+\qecho 'Problem 1'
+
+
+-- Provide 4 conceptually different examples that illustrate how the
+-- presence or absence of primary and foreign keys affect insert and
+-- deletes in these relations.  To solve this problem, you will need to
+-- experiment with the relation schemas and instances for this
+-- assignment.  For example, you should consider altering primary keys
+-- and foreign key constraints and then consider various sequences of
+-- insert and delete operations.  You may need to change some of the
+-- relation instances to observe the desired effects.  Certain inserts
+-- and deletes should succeed but other should generate error
+-- conditions.  (Consider the lecture notes about keys, foreign keys,
+-- and inserts and deletes as a guide to solve this problem.)
+
+
+
+\qecho 'Problem 1 conceptual example 1'
+
+
+-- Here we will look into the realtion between skill and personskill
+	select * from skill;
+	select * from personskill;
+	
+	select * from skill s where s.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
 	
 	-- Example 1:
 	-- Deletion of primary key not allowed.
 	-- ERROR:  update or delete on table "skill" violates foreign key constraint "personskill_skill_fkey" on table "personskill"
 	-- DETAIL:  Key (skill)=(Networks) is still referenced from table "personskill".
-	
 	delete from skill s where s.skill='Networks';
-	 -- select * from personskill ps where ps.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
 	
-	
-\qecho 'Problem 1 conceptual example 2'
-\qecho 'Insert not allowed in realtion since primary key is not present.'
-
+	-- Example 2:
+	-- Insert not allowed in realtion since primary key is not present.
 	-- ERROR:  insert or update on table "personskill" violates foreign key constraint "personskill_pid_fkey"
 	-- DETAIL:  Key (pid)=(1050) is not present in table "person".
-
-insert into personskill values (1050, 'Visualization');
+	insert into personskill values (1050, 'Visualization');
 	
-\qecho 'Problem 1 conceptual example 3'
-\qecho 'Deletion of keys in relation does not affect parent data'
-
-delete from personskill ps where ps.skill='Networks' and ps.pid=1010;
-select count(*) from skill s where s.skill='Networks';
-
-\qecho 'Problem 1 conceptual example 4'
-
--- select * from skill s where s.skill='Networks';
--- select * from personskill ps where ps.skill='Networks';
-delete from personskill ps where ps.skill='Networks' and ps.pid=1010;
-select * from skill s where s.skill='Networks';
+	-- Example 3
+	-- Deletion of keys in relation does not affect parent data.
+	select * from skill s where s.skill='Networks';
+	select * from personskill ps where ps.skill='Networks';
+	delete from personskill ps where ps.skill='Networks' and ps.pid=1010;
+	select * from skill s where s.skill='Networks';
 	
 	-- Example 4:
 	-- Altering primary key in parent table 
@@ -258,9 +275,11 @@ select * from skill s where s.skill='Networks';
 		
 
 
+\qecho 'Problem 1 conceptual example 2'
 
+\qecho 'Problem 1 conceptual example 3'
 
-
+\qecho 'Problem 1 conceptual example 4'
 
 -- Before starting with the rest of the assignment, make sure to
 -- use the originally given data set in data.sql
@@ -382,10 +401,8 @@ where pd.salary > all (
 
 
 
-\qecho 'Connect to default database'
-
+-- Connect to default database
 \c postgres;
 
-\qecho 'Drop database created for this assignment'
-
-DROP DATABASE kiran_karandikar;
+-- Drop database created for this assignment
+DROP DATABASE yourname;
