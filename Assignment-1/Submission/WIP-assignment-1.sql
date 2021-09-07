@@ -186,223 +186,130 @@ INSERT INTO hasManager VALUES
  (1014, 1012);
 
 
-\c postgres;
-DROP DATABASE kiran_karandikar;
-
--------------------------------------------------------------------------
--- Done till here
--- Drop these 2 statments above
--------------------------------------------------------------------------
-
-
-
 \qecho 'Problem 1'
-
-
--- Provide 4 conceptually different examples that illustrate how the
--- presence or absence of primary and foreign keys affect insert and
--- deletes in these relations.  To solve this problem, you will need to
--- experiment with the relation schemas and instances for this
--- assignment.  For example, you should consider altering primary keys
--- and foreign key constraints and then consider various sequences of
--- insert and delete operations.  You may need to change some of the
--- relation instances to observe the desired effects.  Certain inserts
--- and deletes should succeed but other should generate error
--- conditions.  (Consider the lecture notes about keys, foreign keys,
--- and inserts and deletes as a guide to solve this problem.)
-
-
-
 \qecho 'Problem 1 conceptual example 1'
+\qecho 'Deletion of primary key not allowed.'
 
-
--- Here we will look into the realtion between skill and personskill
-	select * from skill;
-	select * from personskill;
-	
-	select * from skill s where s.skill='Networks';
-	select * from personskill ps where ps.skill='Networks';
-	
-	-- Example 1:
-	-- Deletion of primary key not allowed.
-	-- ERROR:  update or delete on table "skill" violates foreign key constraint "personskill_skill_fkey" on table "personskill"
-	-- DETAIL:  Key (skill)=(Networks) is still referenced from table "personskill".
-	delete from skill s where s.skill='Networks';
-	select * from personskill ps where ps.skill='Networks';
-	
-	-- Example 2:
-	-- Insert not allowed in realtion since primary key is not present.
-	-- ERROR:  insert or update on table "personskill" violates foreign key constraint "personskill_pid_fkey"
-	-- DETAIL:  Key (pid)=(1050) is not present in table "person".
-	insert into personskill values (1050, 'Visualization');
-	
-	-- Example 3
-	-- Deletion of keys in relation does not affect parent data.
-	select * from skill s where s.skill='Networks';
-	select * from personskill ps where ps.skill='Networks';
-	delete from personskill ps where ps.skill='Networks' and ps.pid=1010;
-	select * from skill s where s.skill='Networks';
-	
-	-- Example 4:
-	-- Altering primary key in parent table 
-	-- Adding constarint on delte cascade
-	ALTER TABLE personskill DROP CONSTRAINT "personskill_skill_fkey";
-	ALTER TABLE personskill ADD CONSTRAINT "personskill_skill_fkey" foreign key (skill) references skill(skill) ON DELETE CASCADE;
-
-	select * from personskill ps where ps.skill='Networks';
-	select * from skill s where s.skill='Networks';
-	delete from skill s where s.skill='Networks';
-	select * from personskill ps where ps.skill='Networks';
-	
-
-
-	
-	--- Reverting back the tables
-	ALTER TABLE personskill DROP CONSTRAINT "personskill_skill_fkey";
-	ALTER TABLE personskill ADD CONSTRAINT "personskill_skill_fkey" foreign key (skill) references skill(skill);
-	
-	
-	INSERT INTO Skill VALUES ('Networks') Except (select * from skill s where s.skill='Networks');
-	INSERT INTO personskill values 
-	 (1005,'Networks'),
-	 (1009,'Networks'),
-	 (1010,'Networks'),
- 	(1011,'Networks'),
-	 (1013,'Networks'),
-	  (1014,'Networks'),
-	   (1017,'Networks'),
-	    (1019,'Networks')
-		
-
+delete from skill s where s.skill='Networks';
 
 \qecho 'Problem 1 conceptual example 2'
+\qecho 'Insert not allowed in realtion since primary key is not present.'
 
+insert into personskill values (1050, 'Visualization');
+	
 \qecho 'Problem 1 conceptual example 3'
+\qecho 'Deletion of keys in relation does not affect parent data'
+
+delete from personskill ps where ps.skill='Networks' and ps.pid=1010;
+select count(*) from skill s where s.skill='Networks';
 
 \qecho 'Problem 1 conceptual example 4'
+\qecho 'Altering primary key in parent table'
+\qecho 'Adding constarint on delte cascade'
 
--- Before starting with the rest of the assignment, make sure to
--- use the originally given data set in data.sql
+ALTER TABLE personskill DROP CONSTRAINT "personskill_skill_fkey";
+ALTER TABLE personskill ADD CONSTRAINT "personskill_skill_fkey" foreign key (skill) references skill(skill) ON DELETE CASCADE;
+select count(*) from personskill ps where ps.skill='Networks';
+select count(*)  from skill s where s.skill='Networks';
+delete from skill s where s.skill='Networks';
+select count(*) from personskill ps where ps.skill='Networks';
+	
+
+\qecho  'Reverting back the tables'
+
+ALTER TABLE personskill DROP CONSTRAINT "personskill_skill_fkey";
+ALTER TABLE personskill ADD CONSTRAINT "personskill_skill_fkey" foreign key (skill) references skill(skill);
+
+
+INSERT INTO Skill VALUES ('Networks') Except (select * from skill s where s.skill='Networks');
+INSERT INTO personskill values 
+(1005,'Networks'),
+(1009,'Networks'),
+(1010,'Networks'),
+(1011,'Networks'),
+(1013,'Networks'),
+(1014,'Networks'),
+(1017,'Networks'),
+(1019,'Networks');
+
 
 \qecho 'Problem 2'
--- Find the pid, pname of each person who (a) lives in Bloomington, (b)
--- works for a company where he or she earn a salary that is higher than
--- 30000, and (c) has at least one manager.
+
 select distinct p.pid, p.pname from person p, worksFor w, hasManager hm where p.city='Bloomington' and p.pid=w.pid and w.salary > 30000 and hm.eid=p.pid;
 
 \qecho 'Problem 3'
--- Find the pairs $(c_1, c_2)$ of different company names who
--- headquarters are located in the same city.  
+
 select distinct c1.cname, c2.cname from Company c1, Company c2 where c1.headquarter=c2.headquarter and c1.cname!=c2.cname;
 
 
 \qecho 'Problem 4'
--- Find the pid and pname of each person who lives in a city that is
--- different than each city in which his or her managers live.
--- (Persons who have no manager should not be included in the answer.)
-with manager as (select distinct p.pid as mid, p.pname, p.city as city From hasManager hm, Person p where p.pid=hm.mid) select p.pid, p.pname from person p, hasManager hm where p.pid=hm.eid and p.pid not in (select distinct p.pid from Person p, hasManager hm, manager m where p.pid=hm.eid and hm.mid=m.mid and m.city=p.city);
 
-
-
+select p.pid, p.pname from person p, hasmanager hm where hm.eid=p.pid and not exists (select 1 from person m, hasmanager hm1 where hm1.mid=m.pid and m.city=p.city and hm1.eid=p.pid) order by p.pid;
 
 
 \qecho 'Problem 5'
--- Find each skill that is the skill of at most 2 persons.
+
 select s.skill from skill s Except
 (
 select distinct ps1.skill From Personskill ps1, Personskill ps2 where ps1.pid<>ps2.pid and ps1.skill=ps2.skill and Exists(
 	select * from Personskill ps where ps.skill in (ps1.skill, ps2.skill) and ps.pid NOT in (ps1.pid, ps2.pid)
 )
-)
-
-
-
-
-
-
+);
 
 \qecho 'Problem 6'
--- Find the pid, pname, and salary of each employee who has at least two
--- managers such that these managers have a common job skill but provided
--- that it is not the `Networks' skill.
-
-with two_mangers as (select distinct p.pid, p.pname, hm1.mid from Person p, hasmanager hm1, hasmanager hm2 where p.pid=hm1.eid and p.pid=hm2.eid and hm1.mid<>hm2.mid), 
-manager_skills as (
-select ps.skill, tm.mid, tm.pid, tm.pname from personSkill ps, two_mangers tm where ps.pid=tm.mid and ps.skill<>'Networks'
-),
-matching_person as (
-select distinct ms1.pid, ms1.pname from manager_skills ms1, manager_skills ms2 where ms1.pid=ms2.pid and ms1.mid<>ms2.mid and ms1.skill=ms2.skill)
-select mp.pid, mp.pname, wf.salary from worksFor wf, matching_person mp where wf.pid=mp.pid;
-
+select p.pid, p.pname, wf.salary from worksFor wf, person p where wf.pid=p.pid and Exists (
+select 1 from hasmanager hm1, hasmanager hm2 where hm1.eid=hm2.eid and hm1.eid=p.pid and 
+hm1.mid<>hm2.mid and Exists (select 1 from personskill ps1, personskill ps2 where ps1.skill<>'Networks' and ps1.pid=hm1.mid and ps2.pid=hm2.mid and ps1.skill=ps2.skill));
 
 
 \qecho 'Problem 7'
--- Find the cname of each company that not only employs persons
--- who live in MountainView.
+
 SELECT distinct cname FROM worksfor where pid not in (SELECT pid FROM person where city='MountainView') order by cname;
 
-
-
-
 \qecho 'Problem 8'
--- For each company, list its name along with the highest salary made by
--- employees who work for it.
-SELECT wf.cname, salary FROM worksfor wf, company cm where cm.cname=wf.cname and wf.salary>= ALL(select salary from worksfor wf where wf.cname=cm.cname) order by wf.cname;
+
+SELECT w.cname, w.salary FROM worksfor w where exists (select 1 from worksfor wf where wf.cname = w.cname and w.salary>= wf.salary and not exists (select 1 from worksfor w2 where wf.cname = w2.cname and w2.salary> wf.salary )) order by w.cname;
 
 
 \qecho 'Problem 9'
--- Find the pid and pname of each employee who has a salary that is
--- higher than the salary of each of his or her managers.  (Employees who
--- have no manager should not be included.)
 
-with personal_Details as(
-	select	p.pid, p.pname, salary from person p, worksfor wf where p.pid=wf.pid  and
-	Exists(select * from hasmanager hm where hm.eid=p.pid)
-)
-select 
-	pd.pid, pd.pname
-from personal_Details pd
-where pd.salary > all (
-	select distinct wf.salary from worksfor wf where wf.pid in (
-		select hm.mid from hasmanager hm where hm.eid=pd.pid
-	)
-) order by pd.pid;
+with personal_Details as(select p.pid, p.pname, salary from person p, worksfor wf where p.pid=wf.pid  and Exists(select * from hasmanager hm where hm.eid=p.pid))
+select pd.pid, pd.pname from personal_Details pd where pd.salary > all (select distinct wf.salary from worksfor wf where wf.pid in (select hm.mid from hasmanager hm where hm.eid=pd.pid)) order by pd.pid;
 
-	
+
 \qecho 'Problem 10'
 
-
+select p.pid, p.pname, w.cname, w.salary from person p, worksfor w where p.pid=w.pid and p.city='Bloomington' and w.cname<>'Apple' and w.salary >= 40000;
 
 \qecho 'Problem 11'
 
-
+select p.pid, p.pname From person p where Exists(select 1 from company c, worksfor w where p.pid=w.pid and c.cname=w.cname and c.headquarter='LosGatos' and Exists (select 1 from hasmanager hm,person m where hm.eid=p.pid and hm.mid=m.pid and m.city<>'LosGatos'));
 
 \qecho 'Problem 12'
 
+select s.skill from skill s where Not Exists(select 1 from Personskill ps, person p where ps.pid=p.pid and ps.skill=s.skill and p.city='Bloomington');
 
 
 \qecho 'Problem 13'
-
+select m.pid, m.pname from Person m where Not Exists(select 1 from hasmanager hm where hm.mid=m.pid and Not Exists(select 1 from Person e where hm.eid=e.pid and e.city=m.city)) order by m.pid;
 
 
 \qecho 'Problem 18'
--- Each person works for a company and has at least two job skills.
 
-
+select not exists(select 1 from worksfor wf where Not Exists(select 1 from personskill ps1, personskill ps2 where ps1.pid=ps2.pid and ps1.skill<>ps2.skill and ps1.pid=wf.pid)) as constraintSatisfied;
 
 \qecho 'Problem 19'
--- Some person has a salary that is strictly higher than the salary of
--- each of his or her managers.
-
-
+select exists(select  1 from hasmanager hm where Exists (select 1 from worksfor w1, worksfor w2 where w1.pid=hm.eid and w2.pid=hm.mid and w1.salary>w2.salary)
+) as constraintSatisfied;
 
 \qecho 'Problem 20'
--- Each employee and his or her managers work for the same company.
+select not exists(select 1 from hasmanager hm where not Exists (select 1 from worksfor w1, worksfor w2 where w1.pid=hm.eid and w2.pid=hm.mid and w1.cname=w2.cname)) as constraintSatisfied;
 
 
+\qecho 'Connect to default database'
 
--- Connect to default database
 \c postgres;
 
--- Drop database created for this assignment
-DROP DATABASE yourname;
+\qecho 'Drop database created for this assignment'
+
+DROP DATABASE kiran_karandikar;
