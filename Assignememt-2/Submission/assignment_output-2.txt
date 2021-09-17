@@ -1,0 +1,62 @@
+CREATE DATABASE
+You are now connected to database "kiran_karandikar" as user "postgres".
+CREATE DATABASE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 19
+INSERT 0 8
+INSERT 0 19
+INSERT 0 15
+INSERT 0 5
+INSERT 0 37
+INSERT 0 13
+INSERT 0 63
+CREATE TABLE
+INSERT 0 14
+Problem 1
+ pid  | pname 
+------+-------
+ 1011 | Nick
+(1 row)
+
+ pid  | pname 
+------+-------
+ 1011 | Nick
+(1 row)
+
+ pid  | pname 
+------+-------
+ 1011 | Nick
+(1 row)
+
+Problem 2
+ cname | pid  | pname | salary 
+-------+------+-------+--------
+ Apple | 1012 | Eric  |  50000
+ Apple | 1014 | Deepa |  50000
+ Apple | 1018 | Arif  |  50000
+(3 rows)
+
+ cname | pid  | pname | salary 
+-------+------+-------+--------
+ Apple | 1012 | Eric  |  50000
+ Apple | 1014 | Deepa |  50000
+ Apple | 1018 | Arif  |  50000
+(3 rows)
+
+ cname | pid  | pname | salary 
+-------+------+-------+--------
+ Apple | 1018 | Arif  |  50000
+ Apple | 1012 | Eric  |  50000
+ Apple | 1014 | Deepa |  50000
+(3 rows)
+
+Connect to default database
+You are now connected to database "postgres" as user "postgres"
+DROP DATABASE

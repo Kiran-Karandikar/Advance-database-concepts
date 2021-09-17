@@ -1,0 +1,107 @@
+select distinct p.pid , p.pname from person p, worksfor w where p.pid in (select w.pid from worksfor w where w.cname='Google') and p.pid in (SELECT kn.pid1 FROM knows kn where kn.pid2 in (select wf.pid from worksfor wf where wf.cname='Google' and wf.salary < w.salary));
+
+
+select distinct p.pid , p.pname from person p, worksfor w where w.cname='Google' and w.pid=p.pid
+Intersect
+select distinct p1.pid , p1.pname from person p1, person p2, worksfor wf1, worksfor wf2, knows kn  where wf1.cname='Google' and wf1.pid=p1.pid and kn.pid1=p1.pid and kn.pid2=p2.pid and wf1.salary > wf2.salary and wf2.cname='Google'
+
+
+
+-- problem 2
+--> first clause
+
+with loweset_removed as(SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and not exists(select 1 from companylocation cl where cl.cname=c.cname and cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname and exists (select 1 from worksfor wf where wf.cname=c.cname and wf.salary < w.salary))
+select lr.* from loweset_removed lr where  not exists (select 1 from loweset_removed lr1 where lr1.cname=lr.cname and lr1.salary < lr.salary)
+
+--> anser b, need modficication
+SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and not exists(select 1 from companylocation cl where cl.cname=c.cname and cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname and exists (select 1 from worksfor wf where wf.cname=c.cname and wf.salary < w.salary and w.salary <= all (select wf1.salary from worksfor wf1 where wf1.cname=c.cname and wf1.pid<>wf.pid))
+
+-- problem 3
+--> Known by all imp
+-- same company
+with same_company as 
+(select kn.pid1, kn.pid2, wf1.cname from knows kn, worksfor wf1 where wf1.pid=kn.pid1 and exists(select 1 from worksfor wf2 where wf2.cname=wf1.cname and kn.pid2=wf2.pid))
+
+select wf.cname, wf.pid from worksfor wf where exists(
+	select 1 from same_company sc1 where sc.cname=wf.cname and sc2.pid=wf.pid and not exists(select 1 from same_company sc2 where sc2.cname=wf.cname and sc2.pid2<>wf.pid))
+select 
+	
+	
+	or not exists(
+		select 1 from worksfor wf3 where wf3.cname=wf.cname and wf3.pid<>wf.pid
+	)
+
+
+
+
+
+-- Problem 4
+--> Working query ->(a)
+with people_skill as (
+select distinct ps.skill from personskill ps where exists(
+select 1 from worksfor wf where (wf.cname='Yahoo' or wf.cname='Netflix') and wf.pid=ps.pid)
+)
+select s.skill from skill s where not exists ( select 1 from people_skill ps where ps.skill=s.skill)
+
+-- Problem 5
+
+
+
+-- Problem 16 -- --> working 
+create view triangle as(
+with two_p as(select distinct p1.pid1, p1.pid2 from knows p1, knows p2 where p2.pid1=p1.pid2 and p2.pid2=p1.pid1), three_p as (select distinct tp.pid1,tp.pid2, p3.pid2 as pid3 from two_p tp, knows p3 where tp.pid2=p3.pid1 and tp.pid1<>p3.pid2 and exists (select 1 from knows ktest where ktest.pid1=p3.pid2 and ktest.pid2=tp.pid1))
+	select distinct * from three_p tp where exists (select 1 from knows kn where kn.pid1=tp.pid1 and kn.pid2=tp.pid3) and exists(select 1 from knows kn where kn.pid1=tp.pid3 and kn.pid2=tp.pid2));
+
+select pid1, pid2, pid3 from triangle;
+
+
+-- problem 17
+
+---> Issue function not returning value
+drop function if exists SalaryBelow(cname text, salary integer);
+create function SalaryBelow(cname text, salary integer)
+returns TABLE(pid integer, pname text, city text) as
+$$
+select per.pid, per.pname, per.city from person per, worksfor wf where wf.cname=cname and wf.pid=per.pid and wf.salary < salary
+$$ language sql;
+
+select * from SalaryBelow('IBM',60000);
+select * from SalaryBelow('IBM',50000);
+select * from SalaryBelow('Apple', 65000);
+
+
+-- Problem 18 --> working 
+drop function if exists KnowsPersonAtCompany(p integer, c text);
+create function KnowsPersonAtCompany(p integer, c text)
+returns TABLE(pid integer, pname text, city text) as
+$$
+	select per.* from person per where per.pid in (
+		select kn.pid2 from knows kn where kn.pid1=p and exists(
+			select 1 from worksfor wf where wf.pid=kn.pid2 and wf.cname=c
+		)
+	)
+$$ language sql;
+select * from KnowsPersonAtCompany(1001, 'Amazon');
+select * from KnowsPersonAtCompany(1001,'Apple');
+select * from KnowsPersonAtCompany(1015,'Netflix');
+
+
+-- Problem 19 --> working 
+drop function if exists KnownByPersonAtCompany(p integer, c text);
+create function KnownByPersonAtCompany(p integer, c text)
+returns TABLE(pid integer, pname text, city text) as
+$$
+	select per.* from person per where per.pid in (select kn.pid1 from knows kn where kn.pid2=p) and exists (select 1 from worksfor wf1 where wf1.pid=per.pid and wf1.cname=c)
+$$ language sql;
+select * from KnownByPersonAtCompany(1001, 'Amazon');
+select * from KnownByPersonAtCompany(1001,'Apple');
+select * from KnownByPersonAtCompany(1015,'Netflix');
+
+
+-- Problem 20 
+drop function if exists KnownByPersonAtCompany(p integer, c text);
+create function KnownByPersonAtCompany(p integer, c text)
+returns TABLE(pid integer, pname text, city text) as
+$$
+	select per.* from person per where per.pid in (select kn.pid1 from knows kn where kn.pid2=p) and exists (select 1 from worksfor wf1 where wf1.pid=per.pid and wf1.cname=c)
+$$ language sql;
