@@ -1,37 +1,53 @@
-select distinct p.pid , p.pname from person p, worksfor w where p.pid in (select w.pid from worksfor w where w.cname='Google') and p.pid in (SELECT kn.pid1 FROM knows kn where kn.pid2 in (select wf.pid from worksfor wf where wf.cname='Google' and wf.salary < w.salary));
-
-
-select distinct p.pid , p.pname from person p, worksfor w where w.cname='Google' and w.pid=p.pid
-Intersect
-select distinct p1.pid , p1.pname from person p1, person p2, worksfor wf1, worksfor wf2, knows kn  where wf1.cname='Google' and wf1.pid=p1.pid and kn.pid1=p1.pid and kn.pid2=p2.pid and wf1.salary > wf2.salary and wf2.cname='Google'
-
-
-
 -- problem 2
---> first clause
+--> a)
 
 with loweset_removed as(SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and not exists(select 1 from companylocation cl where cl.cname=c.cname and cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname and exists (select 1 from worksfor wf where wf.cname=c.cname and wf.salary < w.salary))
+
 select lr.* from loweset_removed lr where  not exists (select 1 from loweset_removed lr1 where lr1.cname=lr.cname and lr1.salary < lr.salary)
 
---> anser b, need modficication
-SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and not exists(select 1 from companylocation cl where cl.cname=c.cname and cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname and exists (select 1 from worksfor wf where wf.cname=c.cname and wf.salary < w.salary and w.salary <= all (select wf1.salary from worksfor wf1 where wf1.cname=c.cname and wf1.pid<>wf.pid))
 
--- problem 3
---> Known by all imp
--- same company
-with same_company as 
-(select kn.pid1, kn.pid2, wf1.cname from knows kn, worksfor wf1 where wf1.pid=kn.pid1 and exists(select 1 from worksfor wf2 where wf2.cname=wf1.cname and kn.pid2=wf2.pid))
+-- answer b - working copy
+with emp_details as (
+	SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and c.cname not in(select cl.cname from companylocation cl where cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname),
+lowest_removed as (
+	select lr.* from emp_details lr where lr.pid not in ( 
+	select ed.pid from emp_details ed where ed.salary<=all(select salary from emp_details))
+)
+select ntl.* from lowest_removed ntl where ntl.pid in (
+	select lr.pid from lowest_removed lr where lr.salary<=all(select salary from lowest_removed))
+	
+-- answer c -- working copy
+with emp_details as (
+	SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w, companylocation cl where c.headquarter='Cupertino' and cl.city<>'Indianapolis' and cl.cname=c.cname and p.pid=w.pid and w.cname=c.cname),
+lowest_removed as (
+	select distinct ed1.* from emp_details ed1, emp_details ed2 where ed1.pid<>ed2.pid and (ed1.salary-ed2.salary) > 0
+)
+select ntl.* from lowest_removed ntl  intersect 
+select distinct ntl1.* from lowest_removed ntl1, lowest_removed ntl2 where ntl1.pid <>ntl2.pid and (ntl1.salary -ntl2.salary)=0 ;
 
+
+
+
+-- problem 3 -> a) -> working 
 select wf.cname, wf.pid from worksfor wf where exists(
-	select 1 from same_company sc1 where sc.cname=wf.cname and sc2.pid=wf.pid and not exists(select 1 from same_company sc2 where sc2.cname=wf.cname and sc2.pid2<>wf.pid))
-select 
-	
-	
-	or not exists(
-		select 1 from worksfor wf3 where wf3.cname=wf.cname and wf3.pid<>wf.pid
-	)
+		select 1 from worksfor wf1, knows kn1 where wf1.cname=wf.cname and wf1.pid<>wf.pid and kn1.pid1=wf1.pid and kn1.pid2=wf.pid and not exists(
+			select 1 from worksfor wf2, knows kn2 where wf2.cname=wf.cname and wf2.pid<>wf1.pid and wf2.pid<>wf.pid and kn2.pid1=wf2.pid and kn2.pid2<>wf.pid
+		)
+) or not exists( select 1 from worksfor wf3 where wf3.cname=wf.cname and wf3.pid<>wf.pid)
 
-
+-- anser b) - test query
+create view emp_details as (
+	SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w, companylocation cl where c.headquarter='Cupertino' and cl.city<>'Indianapolis' and cl.cname=c.cname and p.pid=w.pid and w.cname=c.cname);
+create view lowest_removed as (
+	select distinct ed1.* from emp_details ed1, emp_details ed2 where ed1.pid<>ed2.pid and (ed1.salary-ed2.salary) > 0
+);
+select ntl.* from lowest_removed ntl  intersect 
+select distinct ntl1.* from lowest_removed ntl1, lowest_removed ntl2 where ntl1.pid <>ntl2.pid and (ntl1.salary -ntl2.salary)=0 ;
+	
+select * from  lowest_removed;
+select * from emp_details;
+drop view lowest_removed;
+drop view emp_details;
 
 
 
@@ -43,7 +59,65 @@ select 1 from worksfor wf where (wf.cname='Yahoo' or wf.cname='Netflix') and wf.
 )
 select s.skill from skill s where not exists ( select 1 from people_skill ps where ps.skill=s.skill)
 
+--Working query -> (b) -->
+with people_skill as (
+select distinct ps.skill from personskill ps, worksfor wf where (wf.cname='Yahoo' or wf.cname='Netflix') and wf.pid=ps.pid
+)
+select s.skill from skill s except (
+	select s.skill from skill s, people_skill ps where ps.skill=s.skill
+)
+
+
 -- Problem 5
+
+-- test function and query
+drop function if exists testProblem5(com text, p int);
+create function testProblem5(com text, p int)
+returns table(pid integer, pname text, city text, cname text, salary integer) as
+$$
+	select per.*, wf.cname, wf.salary from person per, worksfor wf where wf.pid=per.pid and wf.cname=com and per.pid=p;
+$$ language sql;
+
+-- Insert values
+INSERT INTO Person VALUES (1020, 'David', 'New York'),(1021, 'John', 'Bloomington');
+INSERT INTO worksFor VALUES (1020, 'Google', 50000), (1021, 'Google', 5000);
+INSERT INTO hasManager VALUES (1020, 1005),(1021, 1005);
+
+INSERT INTO Person VALUES (1022, 'X', 'Vegas');
+INSERT INTO worksFor VALUES (1022, 'Google', 50000);
+INSERT INTO hasManager VALUES (1020, 1022),(1021, 1022);
+
+
+Delete from worksFor wf where wf.pid in (1020, 1021, 1022) and wf.cname='Google';
+delete from hasManager hm where (hm.eid=1020 and hm.mid=1005) or (hm.eid=1021 and hm.mid=1005);
+delete from hasManager hm where (hm.eid=1020 and hm.mid=1022) or (hm.eid=1021 and hm.mid=1022);
+Delete from person per where per.pid in (1020, 1021, 1022);
+
+select * from testProblem5('Google', 1020);
+select * from testProblem5('Google', 1021);
+select * from testProblem5('Google', 1022);
+
+-- actual query --
+-- as per professor
+select per.pid, per.pname from person per, worksfor wf where per.pid=wf.pid and wf.cname='Google'
+where exists() and not exits()
+
+-- as per me a) --> working copy
+with worksfor_google as (
+	select distinct hm.eid , hm.mid from hasmanager hm, worksfor wf where wf.cname='Google' and wf.pid=hm.eid and hm.mid in (select wfm.pid from worksfor wfm where wfm.cname='Google' and wfm.pid<>hm.eid) 
+) select distinct per.pid, per.pname from person per, worksfor_google wfg where per.pid=wfg.mid and not exists(	select 1 from worksfor_google wfg2 where wfg2.eid<>wfg.eid and wfg2.mid<>wfg.mid)
+
+-- as per me B) --> working copy
+with worksfor_google as (
+	select distinct hm.eid , hm.mid from hasmanager hm, worksfor wf, worksfor wfm where wf.cname='Google' and wf.pid=hm.eid and wfm.cname='Google' and wfm.pid=hm.mid
+)
+select distinct wf.mid as pid, pers.pname from person pers, worksfor_google wf where wf.mid=pers.pid  except select distinct wfg.mid, p.pname from  worksfor_google wfg, worksfor_google wfg2, person p where wfg2.eid<>wfg.eid and wfg2.mid<>wfg.mid and p.pid=wfg.mid
+
+
+-- test query
+create view worksfor_google as (select distinct hm.eid , hm.mid from hasmanager hm, worksfor wf, worksfor wfm where wf.cname='Google' and wf.pid=hm.eid and wfm.cname='Google' and wfm.pid=hm.mid);
+drop view worksfor_google;
+
 
 
 
@@ -55,14 +129,12 @@ with two_p as(select distinct p1.pid1, p1.pid2 from knows p1, knows p2 where p2.
 select pid1, pid2, pid3 from triangle;
 
 
--- problem 17
-
----> Issue function not returning value
-drop function if exists SalaryBelow(cname text, salary integer);
-create function SalaryBelow(cname text, salary integer)
+-- problem 17 --> working
+drop function if exists SalaryBelow(compname text, emp_salary integer);
+create function SalaryBelow(compname text, emp_salary integer)
 returns TABLE(pid integer, pname text, city text) as
 $$
-select per.pid, per.pname, per.city from person per, worksfor wf where wf.cname=cname and wf.pid=per.pid and wf.salary < salary
+select per.* from person per, worksfor wf where wf.cname=compname and wf.salary < emp_salary and per.pid=wf.pid order by per.pid;
 $$ language sql;
 
 select * from SalaryBelow('IBM',60000);
