@@ -1,3 +1,11 @@
+-- what is remaining ---
+--- problem 20
+-- translating quries from 6-10 to ra
+-- queries from 11-15
+
+
+
+
 -- problem 2
 --> a)
 
@@ -35,21 +43,41 @@ select wf.cname, wf.pid from worksfor wf where exists(
 		)
 ) or not exists( select 1 from worksfor wf3 where wf3.cname=wf.cname and wf3.pid<>wf.pid)
 
--- anser b) - test query
-create view emp_details as (
-	SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w, companylocation cl where c.headquarter='Cupertino' and cl.city<>'Indianapolis' and cl.cname=c.cname and p.pid=w.pid and w.cname=c.cname);
-create view lowest_removed as (
-	select distinct ed1.* from emp_details ed1, emp_details ed2 where ed1.pid<>ed2.pid and (ed1.salary-ed2.salary) > 0
+-- anser b) - working
+select wf.cname, wf.pid from worksfor wf where wf.pid in (
+		select kn1.pid2 from worksfor wf1, knows kn1 where wf1.cname=wf.cname and wf1.pid<>wf.pid and kn1.pid1=wf1.pid and kn1.pid2=wf.pid and wf.pid = All(
+			select kn2.pid2 from worksfor wf2, knows kn2 where wf2.cname=wf.cname and wf2.pid<>wf1.pid and wf2.pid<>wf.pid and kn2.pid1=wf2.pid
+		)
+) or wf.pid= all( select wf3.pid from worksfor wf3 where wf3.cname=wf.cname)
+
+-- answer c)-- working query
+with same_company as (select distinct kn.pid1, kn.pid2, wf1.cname from knows kn, worksfor wf1, worksfor wf2 where wf1.cname=wf2.cname and wf1.pid=kn.pid1 and wf2.pid=kn.pid2), known_persons as (select distinct pid2, cname from same_company), single_person_in_company as (select distinct wf1.cname, wf1.pid from worksfor wf1 except  
+	select distinct wf1.cname, wf1.pid from worksfor wf1, worksfor wf2 where 
+	wf1.cname=wf2.cname and wf1.pid<>wf2.pid) (select ks.cname, ks.pid2  from known_persons ks except
+select distinct ks.cname, ks.pid2 from same_company sc1, known_persons ks where sc1.cname=ks.cname and sc1.pid2<>ks.pid2) union select * from single_person_in_company;
+
+-- test query
+
+create view same_company as(
+	select distinct kn.pid1, kn.pid2, wf1.cname from knows kn, worksfor wf1, worksfor wf2 where wf1.cname=wf2.cname and wf1.pid=kn.pid1 and wf2.pid=kn.pid2
 );
-select ntl.* from lowest_removed ntl  intersect 
-select distinct ntl1.* from lowest_removed ntl1, lowest_removed ntl2 where ntl1.pid <>ntl2.pid and (ntl1.salary -ntl2.salary)=0 ;
+create view known_persons as (
+	select distinct pid2, cname from same_company
+);	
+create view single_person_in_company as (
+	select distinct wf1.cname, wf1.pid from worksfor wf1 except  
+	select distinct wf1.cname, wf1.pid from worksfor wf1, worksfor wf2 where 
+	wf1.cname=wf2.cname and wf1.pid<>wf2.pid
+);
+select ks.cname, ks.pid2  from known_persons ks except
+select distinct ks.cname, ks.pid2 from same_company sc1, known_persons ks where sc1.cname=ks.cname and sc1.pid2<>ks.pid2 union select * from single_person_in_company;
 	
-select * from  lowest_removed;
-select * from emp_details;
-drop view lowest_removed;
-drop view emp_details;
-
-
+select * from same_company;
+select * from known_persons;
+select * from single_person_in_company;
+drop view known_persons;
+drop view same_company;
+drop view single_person_in_company;
 
 -- Problem 4
 --> Working query ->(a)
@@ -120,6 +148,91 @@ drop view worksfor_google;
 
 
 
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+------ RA -----
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+-- problem 6
+--> working query 
+with works_for_google as (
+	select p.pid, p.pname, wf.cname, wf.salary from worksfor wf join person p on (p.pid =wf.pid ) where wf.cname='Google'
+), people_details as (
+	select wg.*, kn.pid2 from works_for_google wg join knows kn on (kn.pid1=wg.pid)
+) select distinct pd.pid, pd.pname from people_details pd join works_for_google wg on (pd.pid2=wg.pid) and pd.salary > wg.salary;
+
+----> Test query
+create view works_for_google as (
+	select p.pid, p.pname, wf.cname, wf.salary from worksfor wf join person p on (p.pid =wf.pid ) where wf.cname='Google'
+);
+create view people_details as (
+	select wg.*, kn.pid2 from works_for_google wg join knows kn on (kn.pid1=wg.pid)
+);
+
+select pd.pid, pd.pname from people_details pd join works_for_google wg on (pd.pid2=wg.pid) and pd.salary > wg.salary;
+
+drop view people_details;
+drop view works_for_google;
+
+
+-- problem 7
+--> working query 
+with required_company as (select distinct c.cname from company c join companylocation cl on (cl.cname=c.cname) where c.headquarter='Cupertino' and cl.city<>'Indianapolis'), 
+company_details as (
+	select w.pid, w.salary, w.cname from worksfor w join required_company rc on (w.cname=rc.cname) 
+),
+personal_details as  (select cd.cname, p.pid, p.pname, cd.salary from person p join company_details cd on (cd.pid=p.pid)),
+lowest_removed as (
+	select distinct pd1.* from personal_details pd1 join personal_details pd2 on  (pd1.pid<>pd2.pid) and (pd1.salary-pd2.salary) > 0
+) select distinct ntl1.* from lowest_removed ntl1 join lowest_removed ntl2 on(ntl1.pid <>ntl2.pid) and (ntl1.salary -ntl2.salary)=0 ;
+
+
+-- Problem 8
+-- working query
+with same_company as (select distinct kn.pid1, kn.pid2, wf1.cname from worksfor wf1 join worksfor wf2 on (wf1.cname=wf2.cname) join knows kn on (wf1.pid=kn.pid1 and wf2.pid=kn.pid2)),
+known_persons as (select distinct pid2, cname from same_company),
+single_person_in_company as 
+(select distinct wf1.cname, wf1.pid from worksfor wf1 except  
+	select distinct wf1.cname, wf1.pid from worksfor wf1 join  worksfor wf2 on(
+	wf1.cname=wf2.cname and wf1.pid<>wf2.pid))
+select ks.cname, ks.pid2  from known_persons ks except
+(select distinct ks.cname, ks.pid2 from same_company sc1 join known_persons ks on(sc1.cname=ks.cname and sc1.pid2<>ks.pid2) ) union select * from single_person_in_company;
+
+
+-- problem 9
+-- working query
+
+with people_skill as (
+select distinct ps.skill from personskill ps join worksfor wf on (wf.pid=ps.pid)  where (wf.cname='Yahoo' or wf.cname='Netflix')
+)
+select s.skill from skill s except (
+	select s.skill from skill s join people_skill ps on (ps.skill=s.skill)
+)
+
+
+-- problem 10
+ 
+with worksfor_google as (
+	select distinct hm.eid , hm.mid from hasmanager hm join worksfor wf on (wf.pid=hm.eid) join worksfor wfm on (wfm.pid=hm.mid) where wf.cname='Google' and wfm.cname='Google'
+)
+select distinct wf.mid as pid, pers.pname from person pers join worksfor_google wf on(wf.mid=pers.pid)   except select distinct wfg.mid, p.pname from  worksfor_google wfg join worksfor_google wfg2 on (wfg2.eid<>wfg.eid and wfg2.mid<>wfg.mid) join person p on(p.pid=wfg.mid)
+
+
+-- Problem 11
+
+
+with e_details as(
+select distinct hm.eid,hm.mid, wfe.salary, wfe.cname from hasmanager hm join worksfor wfe on (hm.eid=wfe.pid) join worksfor wfm on (hm.mid=wfm.pid) where wfm.cname=wfe.cname order by hm.eid), m_details as(
+select distinct hm.mid, wfm.salary, wfm.cname from hasmanager hm join worksfor wfm on (hm.mid=wfm.pid) order by hm.mid)
+select md.* from  m_details md where md.salary < all(select ed.salary from e_details ed where ed.cname=md.cname and md.mid=ed.mid)
+
+select md.* from  m_details md where md.salary (ed.mid=md.mid and ed.cname=md.cname)
+
+
+
+
+
 
 -- Problem 16 -- --> working 
 create view triangle as(
@@ -171,9 +284,11 @@ select * from KnownByPersonAtCompany(1015,'Netflix');
 
 
 -- Problem 20 
-drop function if exists KnownByPersonAtCompany(p integer, c text);
-create function KnownByPersonAtCompany(p integer, c text)
+drop function if exists sameGeneration(n1 int, n2 int);
+create function sameGeneration(n1 int, n2 int)
 returns TABLE(pid integer, pname text, city text) as
 $$
-	select per.* from person per where per.pid in (select kn.pid1 from knows kn where kn.pid2=p) and exists (select 1 from worksfor wf1 where wf1.pid=per.pid and wf1.cname=c)
+<< TO DO>>>
 $$ language sql;
+
+select * from sameGeneration();
