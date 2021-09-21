@@ -3,6 +3,11 @@
 -- translating quries from 6-10 to ra
 -- queries from 11-15
 
+-- 1) c) -- working
+select q.* from (select distinct p.pid , p.pname from person p, worksfor w where w.cname='Google' and w.pid=p.pid
+Intersect
+select distinct p1.pid , p1.pname from person p1, person p2, worksfor wf1, worksfor wf2, knows kn  where wf1.cname='Google' and wf1.pid=p1.pid and kn.pid1=p1.pid and kn.pid2=p2.pid and wf1.salary > wf2.salary and wf2.cname='Google') q;
+
 
 
 
@@ -29,11 +34,18 @@ with emp_details as (
 	SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w, companylocation cl where c.headquarter='Cupertino' and cl.city<>'Indianapolis' and cl.cname=c.cname and p.pid=w.pid and w.cname=c.cname),
 lowest_removed as (
 	select distinct ed1.* from emp_details ed1, emp_details ed2 where ed1.pid<>ed2.pid and (ed1.salary-ed2.salary) > 0
-)
-select ntl.* from lowest_removed ntl  intersect 
+)select ntl.* from lowest_removed ntl  intersect 
 select distinct ntl1.* from lowest_removed ntl1, lowest_removed ntl2 where ntl1.pid <>ntl2.pid and (ntl1.salary -ntl2.salary)=0 ;
 
 
+--- as per profesoor
+-- c)
+with emp_details as (
+	SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w, companylocation cl where c.headquarter='Cupertino' and cl.city<>'Indianapolis' and cl.cname=c.cname and p.pid=w.pid and w.cname=c.cname),
+lowest_removed as (
+	select distinct ed1.* from emp_details ed1, emp_details ed2 where ed1.pid<>ed2.pid and (ed1.salary-ed2.salary) > 0
+)select ntl.* from  
+(select distinct ntl1.* from lowest_removed ntl1 intersect select  ntl1.* from  lowest_removed ntl1 , lowest_removed ntl2 where ntl1.pid <>ntl2.pid and (ntl1.salary -ntl2.salary)=0) ntl;
 
 
 -- problem 3 -> a) -> working 
@@ -53,8 +65,8 @@ select wf.cname, wf.pid from worksfor wf where wf.pid in (
 -- answer c)-- working query
 with same_company as (select distinct kn.pid1, kn.pid2, wf1.cname from knows kn, worksfor wf1, worksfor wf2 where wf1.cname=wf2.cname and wf1.pid=kn.pid1 and wf2.pid=kn.pid2), known_persons as (select distinct pid2, cname from same_company), single_person_in_company as (select distinct wf1.cname, wf1.pid from worksfor wf1 except  
 	select distinct wf1.cname, wf1.pid from worksfor wf1, worksfor wf2 where 
-	wf1.cname=wf2.cname and wf1.pid<>wf2.pid) (select ks.cname, ks.pid2  from known_persons ks except
-select distinct ks.cname, ks.pid2 from same_company sc1, known_persons ks where sc1.cname=ks.cname and sc1.pid2<>ks.pid2) union select * from single_person_in_company;
+	wf1.cname=wf2.cname and wf1.pid<>wf2.pid) select q.* from ((select ks.cname, ks.pid2  from known_persons ks except
+select distinct ks.cname, ks.pid2 from same_company sc1, known_persons ks where sc1.cname=ks.cname and sc1.pid2<>ks.pid2) union select * from single_person_in_company) q;
 
 -- test query
 
@@ -91,9 +103,9 @@ select s.skill from skill s where not exists ( select 1 from people_skill ps whe
 with people_skill as (
 select distinct ps.skill from personskill ps, worksfor wf where (wf.cname='Yahoo' or wf.cname='Netflix') and wf.pid=ps.pid
 )
-select s.skill from skill s except (
+select s.* from (select s.skill from skill s except (
 	select s.skill from skill s, people_skill ps where ps.skill=s.skill
-)
+)) s;
 
 
 -- Problem 5
@@ -139,7 +151,7 @@ with worksfor_google as (
 with worksfor_google as (
 	select distinct hm.eid , hm.mid from hasmanager hm, worksfor wf, worksfor wfm where wf.cname='Google' and wf.pid=hm.eid and wfm.cname='Google' and wfm.pid=hm.mid
 )
-select distinct wf.mid as pid, pers.pname from person pers, worksfor_google wf where wf.mid=pers.pid  except select distinct wfg.mid, p.pname from  worksfor_google wfg, worksfor_google wfg2, person p where wfg2.eid<>wfg.eid and wfg2.mid<>wfg.mid and p.pid=wfg.mid
+select q.* from (select distinct wf.mid as pid, pers.pname from person pers, worksfor_google wf where wf.mid=pers.pid  except select distinct wfg.mid, p.pname from  worksfor_google wfg, worksfor_google wfg2, person p where wfg2.eid<>wfg.eid and wfg2.mid<>wfg.mid and p.pid=wfg.mid) q
 
 
 -- test query
