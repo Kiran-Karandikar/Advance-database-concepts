@@ -1,7 +1,6 @@
 -- what is remaining ---
---- problem 20
--- translating quries from 6-10 to ra
--- queries from 11-15
+--- -- translating quries from to ra
+-- \i C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignememt-2/Submission/assignment-2.sql
 
 -- 1) c) -- working
 select q.* from (select distinct p.pid , p.pname from person p, worksfor w where w.cname='Google' and w.pid=p.pid
@@ -14,9 +13,7 @@ select distinct p1.pid , p1.pname from person p1, person p2, worksfor wf1, works
 -- problem 2
 --> a)
 
-with loweset_removed as(SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and not exists(select 1 from companylocation cl where cl.cname=c.cname and cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname and exists (select 1 from worksfor wf where wf.cname=c.cname and wf.salary < w.salary))
-
-select lr.* from loweset_removed lr where  not exists (select 1 from loweset_removed lr1 where lr1.cname=lr.cname and lr1.salary < lr.salary)
+with loweset_removed as(SELECT distinct c.cname, p.pid, p.pname, w.salary FROM company c, person p, worksfor w where c.headquarter='Cupertino' and not exists(select 1 from companylocation cl where cl.cname=c.cname and cl.city='Indianapolis') and p.pid=w.pid and w.cname=c.cname and exists (select 1 from worksfor wf where wf.cname=c.cname and wf.salary < w.salary)) select lr.* from loweset_removed lr where  not exists (select 1 from loweset_removed lr1 where lr1.cname=lr.cname and lr1.salary < lr.salary);
 
 
 -- answer b - working copy
@@ -25,9 +22,8 @@ with emp_details as (
 lowest_removed as (
 	select lr.* from emp_details lr where lr.pid not in ( 
 	select ed.pid from emp_details ed where ed.salary<=all(select salary from emp_details))
-)
-select ntl.* from lowest_removed ntl where ntl.pid in (
-	select lr.pid from lowest_removed lr where lr.salary<=all(select salary from lowest_removed))
+) select ntl.* from lowest_removed ntl where ntl.pid in (
+	select lr.pid from lowest_removed lr where lr.salary<=all(select salary from lowest_removed));
 	
 -- answer c -- working copy
 with emp_details as (
@@ -239,8 +235,50 @@ select distinct hm.eid,hm.mid, wfe.salary, wfe.cname from hasmanager hm join wor
 select distinct hm.mid, wfm.salary, wfm.cname from hasmanager hm join worksfor wfm on (hm.mid=wfm.pid) order by hm.mid)
 select md.* from  m_details md where md.salary < all(select ed.salary from e_details ed where ed.cname=md.cname and md.mid=ed.mid)
 
-select md.* from  m_details md where md.salary (ed.mid=md.mid and ed.cname=md.cname)
+-- test -- working
+with e_details as(
+select distinct hm.eid,hm.mid, wfe.salary, wfe.cname from hasmanager hm join worksfor wfe on (hm.eid=wfe.pid) join worksfor wfm on (hm.mid=wfm.pid) where wfm.cname=wfe.cname order by hm.eid), m_details as(
+select distinct hm.mid, wfm.salary, wfm.cname from hasmanager hm join worksfor wfm on (hm.mid=wfm.pid) order by hm.mid)
+select md.* from  m_details md except select md.* from  m_details md, e_details ed where ed.cname=md.cname and md.mid=ed.mid and not md.salary <ed.salary
 
+-- Problem 12 -- remaining
+create temp view wf_google as (select wf.pid from worksfor wf where wf.cname='Google');
+create temp view knows_wfg as (select kn.* from knows kn,wf_google wfg where kn.pid2=wfg.pid);
+create temp view knows_wfg_p1 as (select distinct pid1 from knows_wfg);
+select * from knows_wfg_p1 order by pid1;
+select * from knows_wfg order by pid1;
+select * from knows_wfg_p1 p1 where not exists(select 1 from knows_wfg kg where kg.pid1=p1.pid1 and kg.pid2 not in (select * from wf_google))
+
+
+select * from knows_wfg knwfg where exists(
+	select 1 from knows_wfg knwfg1 where knwfg.pid1=knwfg1.pid1 and knwfg.pid2<>knwfg1.pid2
+)
+
+select kn.* from knows kn, wf_google wfg where kn.pid2=wfg.pid and not exists(select 1 from knows kn1, wf_google wfg1 where kn1.pid1=kn.pid1 and kn1.pid2<>kn.pid2 and  kn1.pid2=wfg1.pid) order by kn.pid1
+
+or select * from wf_google wfg, knows kn where kn.pid2=wfg.pid and not exists(select * from wf_google wfg1, knows kn1 where kn1.pid2=wfg1.pid and kn1.pid1=kn.pid1)
+
+select distinct kn.* from knows kn, wf_google wfg, knows kn1, wf_google wfg1  where kn.pid2=wfg.pid and kn1.pid1=kn.pid1 and kn1.pid2<>kn.pid2 and  kn1.pid2<>wfg1.pid order by kn.pid1
+
+select kn.* from knows kn where kn.pid2 in (1005, 1011) order by kn.pid1;
+
+-- Problem 13
+select hm.eid from hasmanager hm where not exists(
+	select 1 from knows kn where kn.pid1=hm.eid and kn.pid2=hm.mid
+)
+-- working -->
+select q.* from (select hm.eid from hasmanager hm except select hm.eid from hasmanager hm, knows kn where kn.pid1=hm.eid and kn.pid2=hm.mid
+) q
+
+-- Problem 14
+
+-- working
+with e_details as (
+select hm.*, wf.cname from hasmanager hm, worksfor wf where wf.pid = hm.eid)
+select q.* from (
+	select ed.eid, ed.mid from e_details as ed intersect
+	select ed.eid, ed.mid from e_details ed, worksfor wf where wf.pid=ed.mid and wf.cname<>ed.cname
+)q;
 
 
 
@@ -296,11 +334,13 @@ select * from KnownByPersonAtCompany(1015,'Netflix');
 
 
 -- Problem 20 
-drop function if exists sameGeneration(n1 int, n2 int);
-create function sameGeneration(n1 int, n2 int)
-returns TABLE(pid integer, pname text, city text) as
-$$
-<< TO DO>>>
-$$ language sql;
-
-select * from sameGeneration();
+drop view  if exists sameGeneration;
+CREATE RECURSIVE VIEW sameGeneration(n1, n2) as
+(
+	select t.parent, t.parent from tree as t
+	union
+	select t.child, t.child from tree as t
+	union
+	select t1.child, t2.child from tree t1, tree t2, sameGeneration sg where sg.n1=t1.parent and sg.n2=t2.parent
+);
+select * from sameGeneration order by n1;
