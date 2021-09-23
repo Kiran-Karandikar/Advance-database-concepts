@@ -276,9 +276,9 @@ insert into tree values
  
  \qecho 'Problem 1'
 
--- Consider the query Find the pid and name of each person who works
+-- Consider the query “Find the pid and name of each person who works
 -- for Google and who has a higher salary than some other person who he
--- or she knows and who also works for Google.
+-- or she knows and who also works for Google.”
 
 -- (a) Formulate this query in SQL by only using the EXISTS or NOT EXISTS set predicates.
 select distinct p.pid , p.pname from person p, worksfor w where exists (select 1 from worksfor wf1 where wf1.cname='Google' and wf1.pid=p.pid) and exists (SELECT 1 FROM knows kn where kn.pid1=p.pid and exists(select 1 from worksfor wf where wf.cname='Google' and wf.pid=kn.pid2 and wf.salary < w.salary));
@@ -294,7 +294,7 @@ select q.* from (select distinct p.pid , p.pname from person p, worksfor w where
 
 \qecho 'Problem 2'
 
--- Consider the query Find the cname of each company with headquarter in
+-- Consider the query “Find the cname of each company with headquarter in
 -- Cupertino, but that is not located in Indianapolis, along with the
 -- pid, name, and salary of each person who works for that company and
 -- who has the next-to-lowest salary at that company.
@@ -316,7 +316,7 @@ with emp_details as (SELECT distinct c.cname, p.pid, p.pname, w.salary FROM comp
 
 \qecho 'Problem 3'
 
--- Consider the query Find each (c, p) pair where c is the cname of a 
+-- Consider the query “Find each (c, p) pair where c is the cname of a 
 -- company and p is the pid of a person who works for that company and 
 -- who is known by all other persons who work for that company.
 
@@ -335,7 +335,7 @@ with same_company as (select distinct kn.pid1, kn.pid2, wf1.cname from knows kn,
 
 \qecho 'Problem 4'
 
--- Consider the query Find each skill that is not a jobskill of any person
+-- Consider the query “Find each skill that is not a jobskill of any person
 -- who works for Yahoo or for Netflix.
 
 -- (a) Formulate this query in SQL using subqueries and set predicates. 
@@ -350,7 +350,7 @@ with people_skill as (select distinct ps.skill from personskill ps, worksfor wf 
 
 \qecho 'Problem 5'
 
---  Consider the query Find the pid and name of each person who
+--  Consider the query “Find the pid and name of each person who
 --  manages all but 1 person who work for Google.
 
 
@@ -412,7 +412,7 @@ select pid1, pid2, pid3 from triangle;
 -- for a given company identified by cname and a given salary value, 
 -- the subrelation of Person of persons who work for company cname and whose salary is strictly below salary.
 
--- Test your view for the parameter values ('IBM',60000), ('IBM',50000), and ('Apple',65000).
+-- Test your view for the parameter values (’IBM’,60000), (’IBM’,50000), and (’Apple’,65000).
 create function SalaryBelow(compname text, emp_salary integer)
 returns TABLE(pid integer, pname text, city text) as
 $$
@@ -429,7 +429,7 @@ select * from SalaryBelow('Apple', 65000);
 -- for a person with pid p the subrelation of Person of persons who p knows and 
 -- who work for the company with cname c.
 
--- Test you view for the parameters (1001, 'Amazon'), (1001,'Apple'), and (1015,'Netflix').
+-- Test you view for the parameters (1001, ‘Amazon’), (1001,‘Apple’), and (1015,‘Netflix’).
 
 create function KnowsPersonAtCompany(p integer, c text)
 returns TABLE(pid integer, pname text, city text) as
@@ -447,8 +447,8 @@ select * from KnowsPersonAtCompany(1015,'Netflix');
 -- that returns the subrelation of Person of persons who know the person
 -- with pid p and who work for the company with cname c.  
 
--- Test your view for the parameters (1001, 'Amazon'), (1001,'Apple'),
--- and (1015,'Netflix').
+-- Test your view for the parameters (1001, ‘Amazon’), (1001,‘Apple’),
+-- and (1015,‘Netflix’).
 
 create function KnownByPersonAtCompany(p integer, c text)
 returns TABLE(pid integer, pname text, city text) as
