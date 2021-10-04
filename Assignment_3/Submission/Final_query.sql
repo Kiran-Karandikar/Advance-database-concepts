@@ -547,7 +547,7 @@ select true_d.* from true_d;
 \c postgres
 
 -- Drop database created for this assignment
--- DROP DATABASE kiran_karandikar;
+DROP DATABASE kiran_karandikar;
 
 
 

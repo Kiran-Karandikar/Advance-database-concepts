@@ -62,6 +62,30 @@ select True as fewerThanTwo from drow)q
 union
 select False as fewerThanTwo from drow;
 
+-- Problem 3
+select L1(r1,...,rn) from R1 r1, ..., Rn rn where C1(r1,...,rn) and [not] exists (select L2(s1,...,sm)
+from S1 s1,..., S1 sm where C2(s1,...,sm,r1,...,rn) [union | intersect | except] select L3(t1,...,tk)
+from T1 t1, ..., Tk tk where C3(t1,...,tk,r1,...,rn))
+
+-- single query
+select L1(r) from R r where C1(r) [not] exists (select L2(s) from S s where C2(s,r) [union | intersect | except] select L3(t) from T t where C3(t,r))
+
+-- exists and union
+select L1(r) from (
+select L1(r), L2(s) from S s cross join R r where C1(r) and C2(s,r) union select L3(t), L1(s) from T t cross join R r where C1(r) and C3(t,r)))
+
+-- exists and intersect
+select L1(r) from (
+select L1(r), L2(s) from S s, R r where C1(r) and C2(s,r) intersect select L3(t), L2(s) from T t, R r where C1(r) and C3(t,r)))
+
+-- exists and except
+select L1(r) from (
+select L1(r), L2(s) from S s, R r where C1(r) and C2(s,r) except select L3(t), L2(s) from T t, R r where C1(r) and C3(t,r)))
+
+
+-- single query
+
+select L1(r) from R r where C1(r) not exists (select L2(s) from S s where C2(s,r) union select L3(t) from T t where C3(t,r))
 
 -- Probelm 6:
 select c.cname, c.headquarter
@@ -98,6 +122,12 @@ salry_details as (select w.pid, w.cname from worksfor w where  w.salary < 55000)
 required_company as (select sd.cname from salry_details sd intersect select sd.cname from salry_details sd join required_person rp on  (sd.pid=rp.pid))
 select q.* from  (select c.cname, c.headquarter from company c intersect   select c.cname, c.headquarter from company c join required_company rd on (rd.cname=c.cname))q;
 
+-- step 8 test
+with required_person as (select p.pid from person p where p.city<>'Bloomington'),
+salry_details as (select w.pid, w.cname from worksfor w where  w.salary < 55000),
+required_company as (select sd.cname from salry_details sd natural join required_person rp)
+select distinct q.* from  (select c.cname, c.headquarter from company c natural join required_company rd)q;
+
 
 -- problem 2
 -- step 1
@@ -133,9 +163,8 @@ select s1.*, s2.*, p.* from   skill s1 cross join skill s2 cross join personSkil
 
 --- step 8 test
 with required_person as (select p.pid, s.skill  from  skill s cross join person p except select ps.* from personSkill ps)
-select p.pid from required_person p except select p.pid from  (select q1.* from (select * from   skill s1 cross join skill s2 cross join required_person p where  s1.skill <> s2.skill) q1 except												   
-select q2.* from (select s1.*, s2.*, p.* from   skill s1 cross join skill s2 cross join personSkill ps cross join required_person p where  s1.skill <> s2.skill and p.pid=ps.pid and s1.skill=ps.skill union
-select s1.*, s2.*, p.* from   skill s1 cross join skill s2 cross join personSkill ps cross join required_person p where  s1.skill <> s2.skill and p.pid=ps.pid and s2.skill=ps.skill) q2) p;
+select p.pid from required_person p except select p.pid from  (select q1.* from (select * from   skill s1 join skill s2 on (s1.skill <> s2.skill) cross join required_person p ) q1 except												   
+select q2.* from (select s1.*, s2.*, p.* from   skill s1 join skill s2 on (s1.skill <> s2.skill )cross join personSkill ps join required_person p on (p.pid=ps.pid)  where   s1.skill=ps.skill or s2.skill=ps.skill) q2) p;
 
 
 
@@ -193,6 +222,16 @@ with worksdetail as (select w.pid from worksFor w cross join companyLocation c w
 knowdetails as (select k.pid1 from knows k join persondetail pd on (k.pid2 = pd.pid))
 select q.* from (select p.pid, p.pname from   person p join worksdetail wd on (p.pid=wd.pid) except select p.pid, p.pname from   person p join worksdetail wd on (p.pid=wd.pid) join knowdetails kd on (p.pid=kd.pid1)) q;
 
+-- step 12 test
+with worksdetail as (select w.pid from worksFor w where w.cname in (select c.cname from companyLocation c where c.city = 'Bloomington')), persondetail as (select p.pid from person p where p.city ='Chicago'), 
+knowdetails as (select k.pid1 from knows k where k.pid2 in (select * from persondetail))
+select q.* from (select p.pid, p.pname from   person p join worksdetail wd on (p.pid=wd.pid) except select p.pid, p.pname from   person p join worksdetail wd on (p.pid=wd.pid) join knowdetails kd on (p.pid=kd.pid1)) q;
+
+
+-- step 13 test
+with worksdetail as (select w.pid from worksFor w where w.cname in (select c.cname from companyLocation c where c.city = 'Bloomington')), persondetail as (select p.pid from person p where p.city ='Chicago'), 
+knowdetails as (select k.pid1 from knows k where k.pid2 in (select * from persondetail))
+select q.* from (select p.pid, p.pname from   person p join worksdetail wd on (p.pid=wd.pid) except select p.pid, p.pname from   person p join knowdetails kd on (p.pid=kd.pid1)) q;
 
 -- problem 9
 -- step 1
@@ -259,6 +298,20 @@ c_details as (select distinct c.cname, c.headquarter from company c join worksfo
 select q2.cc, q2.hq from (select w.*, c.cname as cc, c.headquarter as hq from wsalrydetails w join c_details c on (w.cname = c.cname) except select w.*, c.cname as cc, c.headquarter as hq from   wsalrydetails w join c_details c on (w.cname = c.cname) join prog ps on (w.pid=ps.pid)) q2 union select q1.cc, q1.hq from (select w.*, c.cname as cc, c.headquarter as hq from wsalrydetails w join c_details c on(w.cname = c.cname) except select w.*,  c.cname as cc, c.headquarter as hq from   wsalrydetails w join c_details c on (w.cname = c.cname) join ai on(ai.pid=w.pid)) q1
 )subq)q;
 
+
+
+-- step 11 test
+with prog as (select ps.pid from personskill ps where skill = 'Programming'),
+ai  as (select ps.pid from personskill ps where skill = 'AI'),
+c_details as (select distinct w.pid, c.cname, c.headquarter from company c natural join worksfor w where w.salary <= 70000)
+select q.* from (select c.cname, c.headquarter from  c_details c except select subq.cc, subq.hq from (	
+select c.pid, c.cname as cc, c.headquarter as hq from c_details c except (select c.pid, c.cname as cc, c.headquarter as hq from c_details c join prog ps on (c.pid=ps.pid) intersect (select c.pid, c.cname as cc, c.headquarter as hq from c_details c join ai on (ai.pid=c.pid))))subq )q;
+
+
+
+
+
+
 -- problem 10
 
 -- step 1
@@ -293,3 +346,21 @@ select true_d.pid from true_d) q
 union
 select true_d.* from true_d)
 select count(*) from q where q.bool=True;
+
+
+-- step 5 test
+with q as (
+with true_d as (select distinct hm1.mid as pid, True from   hasManager hm1 join hasManager hm2 on (hm1.eid <> hm2.eid and hm1.mid =hm2.mid ))
+select p.pid, False from person p 
+union
+select true_d.* from true_d)
+select distinct * from q where q.bool=True;
+
+
+-- step 6 test
+with q as (
+with true_d as (select distinct hm1.mid as pid, True from   hasManager hm1 where hm1.mid in (select hm2.mid from hasManager hm2 where hm1.eid <> hm2.eid))
+select p.pid, False from person p 
+union
+select true_d.* from true_d)
+select distinct * from q where q.bool=True;
