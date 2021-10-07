@@ -1,0 +1,334 @@
+CREATE DATABASE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 19
+INSERT 0 8
+INSERT 0 19
+INSERT 0 15
+INSERT 0 5
+INSERT 0 46
+INSERT 0 13
+INSERT 0 66
+Problem 1
+   cname   | count 
+-----------+-------
+ Amazon    |     7
+ Apple     |     6
+ Microsoft |     1
+ Netflix   |     2
+ Yahoo     |     1
+(5 rows)
+
+Problem 2
+ pid  | pname 
+------+-------
+ 1008 | Emma
+ 1018 | Arif
+(2 rows)
+
+Problem 3
+ pid  | pname 
+------+-------
+ 1003 | Anna
+ 1008 | Emma
+ 1018 | Arif
+(3 rows)
+
+Problem 4
+CREATE FUNCTION
+ cname 
+-------
+ Apple
+(1 row)
+
+Problem 5
+CREATE FUNCTION
+   cname   |  cname  
+-----------+---------
+ Amazon    | Netflix
+ Amazon    | Yahoo
+ Apple     | Amazon
+ Apple     | Netflix
+ Apple     | Yahoo
+ Google    | Amazon
+ Google    | Netflix
+ Google    | Yahoo
+ Microsoft | Apple
+ Netflix   | Amazon
+ Netflix   | Yahoo
+ Yahoo     | Amazon
+ Yahoo     | Netflix
+(13 rows)
+
+Problem 6
+ pid  
+------
+ 1001
+ 1002
+ 1003
+ 1004
+ 1005
+ 1006
+ 1007
+ 1008
+ 1009
+ 1011
+ 1012
+ 1013
+ 1014
+ 1015
+ 1016
+ 1017
+ 1018
+ 1019
+(18 rows)
+
+Problem 7
+        s1        |        s2        
+------------------+------------------
+ AI               | AI
+ Databases        | Databases
+ Databases        | Networks
+ Networks         | Databases
+ Networks         | Networks
+ OperatingSystems | OperatingSystems
+ Programming      | Programming
+(7 rows)
+
+Problem 8
+        s1        |        s2        | n  
+------------------+------------------+----
+ Databases        | Networks         |  8
+ Databases        | OperatingSystems |  8
+ Networks         | Databases        |  8
+ Networks         | OperatingSystems |  8
+ OperatingSystems | Databases        |  8
+ OperatingSystems | Networks         |  8
+ AI               | Programming      | 11
+ Programming      | AI               | 11
+(8 rows)
+
+Problem 9
+Problem 9a
+CREATE FUNCTION
+Problem 9b
+ pid  | salary | numberofskills 
+------+--------+----------------
+ 1018 |  50000 |              1
+ 1001 |  65000 |              2
+ 1002 |  45000 |              2
+ 1009 |  60000 |              3
+ 1012 |  50000 |              3
+ 1014 |  50000 |              4
+(6 rows)
+
+ pid  | salary | numberofskills 
+------+--------+----------------
+ 1003 |  55000 |              0
+ 1008 |  50000 |              0
+ 1004 |  55000 |              2
+ 1010 |  55000 |              2
+ 1015 |  60000 |              2
+ 1016 |  55000 |              2
+ 1006 |  55000 |              3
+(7 rows)
+
+ pid | salary | numberofskills 
+-----+--------+----------------
+(0 rows)
+
+Problem 9c
+CREATE FUNCTION
+Problem 9d
+ pid  | salary | numberofskills 
+------+--------+----------------
+ 1018 |  50000 |              1
+ 1001 |  65000 |              2
+ 1002 |  45000 |              2
+ 1009 |  60000 |              3
+ 1012 |  50000 |              3
+ 1014 |  50000 |              4
+(6 rows)
+
+ pid  | salary | numberofskills 
+------+--------+----------------
+ 1003 |  55000 |              0
+ 1008 |  50000 |              0
+ 1004 |  55000 |              2
+ 1010 |  55000 |              2
+ 1015 |  60000 |              2
+ 1016 |  55000 |              2
+ 1006 |  55000 |              3
+(7 rows)
+
+ pid | salary | numberofskills 
+-----+--------+----------------
+(0 rows)
+
+Problem 9e
+  cname  | pid  
+---------+------
+ Amazon  | 1006
+ Google  | 1011
+ Netflix | 1017
+ Yahoo   | 1013
+(4 rows)
+
+Problem 10
+CREATE TABLE
+CREATE TABLE
+INSERT 0 3
+INSERT 0 4
+Polynomial P = 2x^2 - 5x + 5
+Polynomial Q = 4x^4 + 3x^3 + x^2 -x
+P
+ coefficient | degree 
+-------------+--------
+           5 |      0
+          -5 |      1
+           2 |      2
+(3 rows)
+
+Q
+ coefficient | degree 
+-------------+--------
+          -1 |      1
+           1 |      2
+           3 |      3
+           4 |      4
+(4 rows)
+
+Problem 10a
+CREATE FUNCTION
+Problem 10b.i
+ coefficient | degree 
+-------------+--------
+           8 |      6
+         -14 |      5
+           7 |      4
+           8 |      3
+          10 |      2
+          -5 |      1
+(6 rows)
+
+Problem 10b.ii
+ coefficient | degree 
+-------------+--------
+           4 |      4
+         -20 |      3
+          45 |      2
+         -50 |      1
+          25 |      0
+(5 rows)
+
+Problem 10b.iii
+ coefficient | degree 
+-------------+--------
+          16 |      8
+         -68 |      7
+         124 |      6
+         -89 |      5
+          15 |      4
+         -20 |      3
+          75 |      2
+         -25 |      1
+(8 rows)
+
+Problem 11
+Problem 11.a
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+Problem 11.a.i
+ coefficient | degree 
+-------------+--------
+          32 |      8
+          48 |      7
+          34 |      6
+          -4 |      5
+         -30 |      4
+         -19 |      3
+          -3 |      2
+           5 |      1
+           5 |      0
+(9 rows)
+
+Problem 11.a.ii
+ coefficient | degree 
+-------------+--------
+          64 |      8
+        -640 |      7
+        3064 |      6
+       -8980 |      5
+       17534 |      4
+      -23295 |      3
+       20618 |      2
+      -11170 |      1
+        2895 |      0
+(9 rows)
+
+Problem 11.a.iii
+CREATE VIEW
+ coefficient | degree 
+-------------+--------
+         128 |      8
+       -1280 |      7
+        5760 |      6
+      -15200 |      5
+       25720 |      4
+      -28600 |      3
+       20450 |      2
+       -8625 |      1
+        1655 |      0
+(9 rows)
+
+Problem 12
+Problem 12.a
+CREATE FUNCTION
+CREATE TABLE
+INSERT 0 361
+Problem 12.b
+There are 189 values that are true
+ count 
+-------
+   189
+(1 row)
+
+
+Problem 12.c
+There are 324 values that are true
+ count 
+-------
+   324
+(1 row)
+
+
+
+Problem 13
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+Problem 14
+CREATE FUNCTION
+DROP TRIGGER
+CREATE TRIGGER
+Problem 15
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+DROP DATABASE

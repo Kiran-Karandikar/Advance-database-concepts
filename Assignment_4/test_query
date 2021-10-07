@@ -1,0 +1,52 @@
+SELECT pid, cname, salary
+	FROM public.worksfor;
+	
+	
+-- problem 1
+
+select w.cname, count(w.pid)  from worksfor w group by (w.cname) having (50000 <= avg(w.salary)) and (avg(w.salary) <=55000) order by w.cname;
+
+-- problem 2 -- in progress
+
+select ps.pid, count(ps.skill) from personskill ps group by (ps.pid) order by ps.pid;
+select * from skill;
+-- what it means by at leat 4 job skills;
+select ps.pid from personskill ps except
+select ps.pid from personskill ps group by (ps.pid) having count(ps.skill) >4;
+-- knows at least 4 persons
+select kn.pid1 from knows kn group by (kn.pid1) having count(kn.pid2)>=4
+
+select count(*) as total_skills from skill;
+-- test query
+with knows_at_least_4_persons as (
+select kn.pid1 from knows kn group by (kn.pid1) having count(kn.pid2)>=4),
+lack_at_least_4_skills as (
+select ps.pid from personskill ps group by (ps.pid)  having ((select count(*) as total_skills from skill)- count(ps.skill)) >=4
+)
+select p.pid, p.pname from person p where p.pid in (select * from knows_at_least_4_persons) and p.pid in (select * from lack_at_least_4_skills)
+union
+select p.pid, p.pname from person p where p.pid not in (select ps.pid from personskill ps) and p.pid in (select * from knows_at_least_4_persons)
+
+-- working query
+with knows_at_least_4_persons as (
+select kn.pid1 from knows kn group by (kn.pid1) having count(kn.pid2)>=4),
+lack_at_least_4_skills as (
+select ps.pid from personskill ps group by (ps.pid)  having ((select count(*) as total_skills from skill)- count(ps.skill)) >=4
+)
+select p.pid, p.pname from person p where p.pid in (select * from knows_at_least_4_persons) and p.pid in (select * from lack_at_least_4_skills)
+union
+select p.pid, p.pname from person p where p.pid not in (select ps.pid from personskill ps) and p.pid in (select * from knows_at_least_4_persons)
+
+
+-- problem 3
+with all_g_skills as (
+with wgoogle as (select w.pid from worksfor w where w.cname='Google')
+select  count(distinct ps.skill) from personskill ps where ps.pid in (select * from wgoogle))
+select  p.pid, p.pname from person p where p.pid in (select ps.pid from personskill ps) 
+
+-- test query
+-- what is fewer than 2 means???
+with all_g_skills as (
+with wgoogle as (select w.pid from worksfor w where w.cname='Google')
+select  count(distinct ps.skill) from personskill ps where ps.pid in (select * from wgoogle))
+select  p.pid, p.pname from person p where p.pid in (select ps.pid from personskill ps group by ps.pid having ((select * from all_g_skills) - count(ps.skill)) >2)
