@@ -54,6 +54,7 @@ with wgoogle as (select w.pid from worksfor w where w.cname='Google')
 select  count(distinct ps.skill) from personskill ps where ps.pid in (select * from wgoogle))
 select  p.pid, p.pname from person p where p.pid in (select ps.pid from personskill ps group by ps.pid having ((select * from all_g_skills) - count(ps.skill)) >2)
 
+-- working query
 with r_skills as (
 with wgoogle as (select w.pid from worksfor w where w.cname='Google')
 select  distinct ps.skill from personskill ps where ps.pid in (select * from wgoogle)),
@@ -86,41 +87,39 @@ select w.cname, count(w.pid), avg(w.salary) as avg_sal from worksfor w group by 
 select rc.cname from required_companies rc where rc.avg_sal in (select min(rc1.avg_sal) from required_companies rc1)
 
 -- problem 5
+
+-- working query
+create or replace function abs_avg_salary(company_name text, comp_avg_sal float) 
+returns table(cname text) as 
+$$
+with other_companies as (
+	select rc1.cname ,abs(rc1.avg_sal - comp_avg_sal) as distance from required_companies rc1 where rc1.cname<>company_name and abs(rc1.avg_sal - comp_avg_sal) >=0
+)
+select oc1.cname from other_companies oc1 where oc1.distance in (select min(distance) from other_companies oc)
+$$ language sql;
 with required_companies as (
-select w.cname, count(w.pid), avg(w.salary) as avg_sal from worksfor w group by (w.cname))
+select w.cname, avg(w.salary) as avg_sal from worksfor w group by (w.cname))
+select rc1.cname as c1,rc2 as c2  from required_companies rc1, abs_avg_salary(rc1.cname, rc1.avg_sal) as rc2 order by c1;
+
 
 
 -- test query --- issue
+drop function if exists abs_avg_salary(company_name text, comp_avg_sal float);
 drop view if exists required_companies;
-drop function if exists min_avg_sal_of_companies(company_name text, comp_avg_sal float);
-drop function if exists max_avg_sal_of_companies(company_name text, comp_avg_sal float);
-
-
 create or replace temp view required_companies as (
 select w.cname, avg(w.salary) as avg_sal from worksfor w group by (w.cname));
-create or replace function min_avg_sal_of_companies(company_name text, comp_avg_sal float) 
+
+select rc.* from required_companies as rc;
+
+create or replace function abs_avg_salary(company_name text, comp_avg_sal float) 
 returns table(cname text) as 
 $$
 with other_companies as (
-	select rc1.cname , rc1.avg_sal from required_companies rc1 where rc1.cname<>company_name and rc1.avg_sal >=comp_avg_sal
+	select rc1.cname ,abs(rc1.avg_sal - comp_avg_sal) as distance from required_companies rc1 where rc1.cname<>company_name and abs(rc1.avg_sal - comp_avg_sal) >=0
 )
-select oc1.cname from other_companies oc1 where oc1.avg_sal in (select min(oc.avg_sal) from other_companies oc)
-$$
-language sql;
-create or replace function max_avg_sal_of_companies(company_name text, comp_avg_sal float) 
-returns table(cname text) as 
-$$
-with other_companies as (
-	select rc1.cname , rc1.avg_sal from required_companies rc1 where rc1.cname<>company_name and rc1.avg_sal <=comp_avg_sal
-)
-select oc1.cname from other_companies oc1 where oc1.avg_sal in (select max(oc.avg_sal) from other_companies oc)
-$$
-language sql;
-
-(select rc1.cname, rc2 from required_companies rc1, min_avg_sal_of_companies(rc1.cname, rc1.avg_sal) as rc2)
-union
-(select rc1.cname, rc2 from required_companies rc1, max_avg_sal_of_companies(rc1.cname, rc1.avg_sal) as rc2 )
-
+select oc1.cname from other_companies oc1 where oc1.distance in (select min(distance) from other_companies oc)
+$$ language sql;
+select rc1.cname as c1,rc2 as c2  from required_companies rc1, abs_avg_salary(rc1.cname, rc1.avg_sal) as rc2 order by c1;
 
 -- problem 6
 -- working query
@@ -237,11 +236,15 @@ select * from numberOfSkills('ACM') order by numberOfSkills;
 -- 9e
 -- working 
 with details as(
-select c.cname, ns.pid, ns.numberOfSkills as scount from company c, numberOfSkills(c.cname) as ns where ns.salary >50000),
+select c.cname, ns.pid, ns.numberOfSkills as scount, ns.salary from company c, numberOfSkills(c.cname) as ns),
 max_skills as (select cname, max(d.scount) as max_count from details d group by cname)
-select d.cname, d.pid from details d join max_skills ms on(d.cname=ms.cname and d.scount=ms.max_count)
+select d.cname, d.pid from details d join max_skills ms on(d.cname=ms.cname and d.scount=ms.max_count) and d.salary> 50000
 
 -- testing 9e
+with details as(
+select c.cname, ns.pid, ns.numberOfSkills as scount, ns.salary from company c, numberOfSkills(c.cname) as ns),
+max_skills as (select cname, max(d.scount) as max_count from details d group by cname)
+select d.cname, d.pid from details d join max_skills ms on(d.cname=ms.cname and d.scount=ms.max_count) and d.salary> 50000
 
 
 
@@ -264,11 +267,58 @@ insert into q values (4,4), (3,3), (1,2), (-1,1);
 
 
 -- testing query
+drop function if exists multiplyPolynomials(polynomal1 text, polynomial2 text);
+create or replace function multiplyPolynomials(polynomal1 text, polynomial2 text) returns table(c integer, d integer) as
+$$
+begin 
+return query
+execute 'select * from ' || polynomal1;
+end;
+$$ language plpgsql;
+
+drop function if exists multiplyPolynomials(polynomal1 text, polynomial2 text);
+create or replace function multiplyPolynomials(polynomal1 text, polynomial2 text) returns table(c integer, d integer) as
+$$
+
+select polynomal1.c from p
+
+$$ language sql;
+
+select * from multiplyPolynomials('p','p')
+
+
+select * from p;
+select * from q;
+
+
+drop function if exists multiplyPolynomials(polynomial1 text, polynomial2 text);
+create or replace function multiplyPolynomials(polynomial1 text, polynomial2 text) returns table(c integer, d integer) as
+$$
+begin 
+return query
+execute 'with mul as (select p1.c*p2.c as c, p1.d+p2.d as d from ' || polynomial1 || ' as p1,' || polynomial2 ||' as p2)
+select cast(sum(mul.c) as INTEGER), cast(mul.d as INTEGER) from mul group by mul.d order by mul.d desc';
+
+end;
+$$ language plpgsql;
 
 
 
+select * from multiplyPolynomials('p','q')
+select * from multiplyPolynomials('p','p')
 
+select * from multiplyPolynomials('p',$$ multiplyPolynomials('q','p') $$)
 
+-- test query
+with mul as (select p.c*q.c as c, p.d+q.d as d from p,q)
+select sum(mul.c), mul.d from mul group by mul.d order by mul.d desc;
 
+with test as (
+	select * from multiplyPolynomials('q','p')
+)
+q2 := (select * from multiplyPolynomials('q','p'));
+select * from multiplyPolynomials('p', 'test');
+
+select * from multiplyPolynomials('p', $$multiplyPolynomials('q','p')$$);
 
 

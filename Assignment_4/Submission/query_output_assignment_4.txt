@@ -1,0 +1,265 @@
+CREATE DATABASE
+You are now connected to database "kiran_karandikar" as user "postgres".
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 19
+INSERT 0 8
+INSERT 0 19
+INSERT 0 15
+INSERT 0 5
+INSERT 0 46
+INSERT 0 13
+INSERT 0 66
+Problem 1
+   cname   | count
+-----------+-------
+ Amazon    |     7
+ Apple     |     6
+ Microsoft |     1
+ Netflix   |     2
+ Yahoo     |     1
+(5 rows)
+
+
+Problem 2
+ pid  | pname
+------+-------
+ 1018 | Arif
+ 1008 | Emma
+(2 rows)
+
+
+Problem 3
+ pid  | pname
+------+-------
+ 1018 | Arif
+ 1008 | Emma
+ 1003 | Anna
+(3 rows)
+
+
+Problem 4
+ cname
+-------
+ Apple
+(1 row)
+
+
+Problem 5
+CREATE VIEW
+CREATE FUNCTION
+    c1     |   c2
+-----------+---------
+ Amazon    | Netflix
+ Amazon    | Yahoo
+ Apple     | Amazon
+ Apple     | Netflix
+ Apple     | Yahoo
+ Google    | Amazon
+ Google    | Netflix
+ Google    | Yahoo
+ Microsoft | Apple
+ Netflix   | Amazon
+ Netflix   | Yahoo
+ Yahoo     | Amazon
+ Yahoo     | Netflix
+(13 rows)
+
+
+Problem 6
+ person_id
+-----------
+      1001
+      1002
+      1003
+      1004
+      1005
+      1006
+      1007
+      1008
+      1009
+      1011
+      1012
+      1013
+      1014
+      1015
+      1016
+      1017
+      1018
+      1019
+(18 rows)
+
+
+Problem 7
+      skill1      |      skill2
+------------------+------------------
+ Networks         | Databases
+ AI               | AI
+ OperatingSystems | OperatingSystems
+ Databases        | Networks
+ Networks         | Networks
+ Programming      | Programming
+ Databases        | Databases
+(7 rows)
+
+
+Problem 8
+      skill       |      skill       | count
+------------------+------------------+-------
+ Databases        | OperatingSystems |     8
+ Databases        | Networks         |     8
+ Networks         | OperatingSystems |     8
+ Networks         | Databases        |     8
+ OperatingSystems | Networks         |     8
+ OperatingSystems | Databases        |     8
+ Programming      | AI               |    11
+ AI               | Programming      |    11
+(8 rows)
+
+
+Problem 9
+Problem 9a
+CREATE FUNCTION
+Problem 9b
+ pid  | salary | numberofskills
+------+--------+----------------
+ 1018 |  50000 |              1
+ 1001 |  65000 |              2
+ 1002 |  45000 |              2
+ 1009 |  60000 |              3
+ 1012 |  50000 |              3
+ 1014 |  50000 |              4
+(6 rows)
+
+
+ pid  | salary | numberofskills
+------+--------+----------------
+ 1008 |  50000 |              0
+ 1003 |  55000 |              0
+ 1010 |  55000 |              2
+ 1004 |  55000 |              2
+ 1015 |  60000 |              2
+ 1016 |  55000 |              2
+ 1006 |  55000 |              3
+(7 rows)
+
+
+ pid | salary | numberofskills
+-----+--------+----------------
+(0 rows)
+
+
+Problem 9c
+CREATE FUNCTION
+Problem 9d
+ pid  | salary | numberofskills
+------+--------+----------------
+ 1018 |  50000 |              1
+ 1001 |  65000 |              2
+ 1002 |  45000 |              2
+ 1009 |  60000 |              3
+ 1012 |  50000 |              3
+ 1014 |  50000 |              4
+(6 rows)
+
+
+ pid  | salary | numberofskills
+------+--------+----------------
+ 1008 |  50000 |              0
+ 1003 |  55000 |              0
+ 1010 |  55000 |              2
+ 1004 |  55000 |              2
+ 1015 |  60000 |              2
+ 1016 |  55000 |              2
+ 1006 |  55000 |              3
+(7 rows)
+
+
+ pid | salary | numberofskills
+-----+--------+----------------
+(0 rows)
+
+
+Problem 9e
+  cname  | pid
+---------+------
+ Amazon  | 1006
+ Google  | 1011
+ Netflix | 1017
+ Yahoo   | 1013
+(4 rows)
+
+
+Problem 10
+CREATE TABLE
+CREATE TABLE
+INSERT 0 3
+INSERT 0 4
+Polynomial P = 2x^2 - 5x + 5
+Polynomial Q = 4x^4 + 3x^3 + x^2 -x
+P
+ coefficient | degree
+-------------+--------
+           2 |      2
+          -5 |      1
+           5 |      0
+(3 rows)
+
+
+Q
+ coefficient | degree
+-------------+--------
+           4 |      4
+           3 |      3
+           1 |      2
+          -1 |      1
+(4 rows)
+
+
+Problem 10a
+CREATE FUNCTION
+Problem 10b.i
+ coefficient | degree
+-------------+--------
+           8 |      6
+         -14 |      5
+           7 |      4
+           8 |      3
+          10 |      2
+          -5 |      1
+(6 rows)
+
+
+Problem 10b.ii
+ coefficient | degree
+-------------+--------
+           4 |      4
+         -20 |      3
+          45 |      2
+         -50 |      1
+          25 |      0
+(5 rows)
+
+
+Problem 10b.iii
+ coefficient | degree
+-------------+--------
+          16 |      8
+         -68 |      7
+         124 |      6
+         -89 |      5
+          15 |      4
+         -20 |      3
+          75 |      2
+         -25 |      1
+(8 rows)
+
+
+You are now connected to database "postgres" as user "postgres".
+DROP DATABASE
