@@ -111,21 +111,32 @@ $$ language plpgsql;
 set work_mem='1GB';
 show work_mem;
 
+-- problem 1
+drop table if exists P;
+drop table if exists R;
+create table P(a int);
+create table R(a int, b int);
+create table S(b int);
+
+select p.x,q.x from P p, Q q where exists (select r.y from R r where r.x = p.x and p.x not in (select s.z from S s where s.x = q.x)); 
+
 -- Problem 2 << Pending the execution times >>
 --- Part a: Q3
+select distinct p.a from P p, R r1, R r2, R r3, S s where p.a = r1.a and r1.b = r2.a and r2.b = r3.a and r3.b = S.b
 VACUUM FULL;
-select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(5,1,8,5,'select distinct p.a from P p, R r1, R r2, R r3, S s where p.a = r1.a and r1.b = r2.a and r2.b = r3.a and r3.b = S.b');
+select queryPlan('select distinct p.a from P p, R r1, R r2, R r3, S s where p.a = r1.a and r1.b = r2.a and r2.b = r3.a and r3.b = S.b')
+select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(1,1,2,1,'select distinct p.a from P p, R r1, R r2, R r3, S s where p.a = r1.a and r1.b = r2.a and r2.b = r3.a and r3.b = S.b');
 
 
 -- part b: optimized Q4
 select distinct p.a from P p join R r1 on (p.a = r1.a) join R r2 on(r1.b = r2.a) join R r3 on (r2.b = r3.a) join S s on(r3.b = S.b);
 
-select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(5,1,7,5,'select distinct p.a from P p join R r1 on (p.a = r1.a) join R r2 on(r1.b = r2.a) join R r3 on (r2.b = r3.a) join S s on(r3.b = S.b);');
+select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(1,1,5,1,'select distinct p.a from P p join R r1 on (p.a = r1.a) join R r2 on(r1.b = r2.a) join R r3 on (r2.b = r3.a) join S s on(r3.b = S.b);');
 
 -- Problem 3 << Pending the execution times >>
 --- Part a: Q5
 VACUUM FULL;
-select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(5,1,2,5,'select p.a from P p where exists (select 1 from R r where r.a = p.a and not exists (select 1 from S s where r.b = s.b));');
+select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(1,1,6,1,'select p.a from P p where exists (select 1 from R r where r.a = p.a and not exists (select 1 from S s where r.b = s.b));');
 
 -- part b: optimized Q6 
 -- step 1
@@ -134,22 +145,23 @@ select p.a from P p where exists (select 1 from R r where r.a = p.a and not exis
 -- step 2
 
 select p.a from P p where exists ((select r.a, r.b from R r where r.a = p.a) except (select r.a,r.b from R r, S s where r.a = p.a and r.b = s.b))
---  step 3 : translation is wrong
+--  step 3 : 
+select distinct q.a from (select p.a,r.a as ra,r.b from P p natural join R r
+except select p.a,r.a as ra,r.b	from P p natural join R r natural join S s) q;
 
-
-
-select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(5,1,7,5,'select distinct p.a from P p join R r1 on (p.a = r1.a) join R r2 on(r1.b = r2.a) join R r3 on (r2.b = r3.a) join S s on(r3.b = S.b);');
+select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(1,1,5,1,'select distinct q.a from (select p.a,r.a as ra,r.b from P p natural join R r
+except select p.a,r.a as ra,r.b	from P p natural join R r natural join S s) q;');
 
 -- part c: Q7
-
-select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(5,1,2,5,'with nestedR as (select P.a, array_agg(R.b) as bs from P natural join R group by (P.a)), Ss as (select array(select b from S) as bs) select a from nestedR where not (bs <@ (select bs from Ss));');
+vacuum full;
+select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(1,1,5,1,'with nestedR as (select P.a, array_agg(R.b) as bs from P natural join R group by (P.a)), Ss as (select array(select b from S) as bs) select a from nestedR where not (bs <@ (select bs from Ss));');
 
 
 -- Problem 4 << Pending the execution times >>
 --- Part a: Q8
 VACUUM FULL;
 
-select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(5,1,1,5,'select p.a from P p where exists (select 1 from S s where not exists (select 1 from R where p.a = r.a and r.b = s.b));');
+select s as "Size of relation", e as "Avg execution time (in ms)" from   experiment(1,1,5,1,'select p.a from P p where exists (select 1 from S s where not exists (select 1 from R where p.a = r.a and r.b = s.b));');
 
 -- part b: optimized Q9
 -- step 1
@@ -159,9 +171,11 @@ select p.a from P p where exists (select 1 from S s where not exists (select 1 f
 select p.a from P p where exists (select p.a, s.b from S s except select r.a, r.b from S s, R r where p.a = r.a and r.b = s.b);
 
 
--- step 3 -- translation going wrong
-select p.a from P p where exists (select p.a, s.b from S s except select r.a, r.b from S s, R r where p.a = r.a and r.b = s.b);
+-- step 3 
+select distinct q.a from (select p.a, s.b from P p cross join S s except	select p.a, s.b from P p natural join R r natural join S s) q;
+
+select s as "Size of relation", e as "Avg execution time (in ms)" from experiment(1,1,4,1,$$select distinct q.a from (select p.a, s.b from P p cross join S s except	select p.a, s.b from P p natural join R r natural join S s) q;$$);
 
 -- part c: Q10
-
-select s as "Size of relation", e as "Avg execution time (in ms)" from experiment(5,1,5,5,$$with nestedR as (select P.a, array_agg(R.b) as bs from P natural join R group by (P.a)), Ss as (select array(select b from S) as bs) select a from P where a not in (select a from nestedR) and not((select bs from Ss) <@ '{}') union select a from nestedR where not((select bs from Ss) <@ bs);$$);
+vacuum full;
+select s as "Size of relation", e as "Avg execution time (in ms)" from experiment(1,1,5,1,$$with nestedR as (select P.a, array_agg(R.b) as bs from P natural join R group by (P.a)), Ss as (select array(select b from S) as bs) select a from P where a not in (select a from nestedR) and not((select bs from Ss) <@ '{}') union select a from nestedR where not((select bs from Ss) <@ bs);$$);

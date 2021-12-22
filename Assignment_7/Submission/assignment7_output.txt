@@ -1,0 +1,438 @@
+CREATE DATABASE
+You are now connected to database "kiran_karandikar" as user "postgres".
+Problem 7
+CREATE TABLE
+INSERT 0 11
+CREATE FUNCTION
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:59: NOTICE:  table "connected_nodes" does not exist, skipping
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:59: NOTICE:  table "temp_connected_nodes" does not exist, skipping
+ same_generation_func
+----------------------
+
+(1 row)
+
+
+ m  | n
+----+----
+  1 |  1
+  2 |  2
+  2 |  3
+  2 |  4
+  3 |  2
+  3 |  3
+  3 |  4
+  4 |  2
+  4 |  3
+  4 |  4
+  5 |  5
+  5 |  6
+  5 |  7
+  5 |  8
+  6 |  5
+  6 |  6
+  6 |  7
+  6 |  8
+  7 |  5
+  7 |  6
+  7 |  7
+  7 |  8
+  8 |  5
+  8 |  6
+  8 |  7
+  8 |  8
+  9 |  9
+Problem 8
+CREATE TABLE
+CREATE TABLE
+INSERT 0 11
+INSERT 0 5
+Problem 8.a
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:97: NOTICE:  function recursiveaggregatedweight(pg_catalog.int4) does not exist, skipping
+DROP FUNCTION
+CREATE FUNCTION
+ pid | sid | quantity
+-----+-----+----------
+   1 |   2 |        1
+   1 |   3 |        3
+   1 |   4 |        2
+   2 |   5 |        1
+   2 |   6 |        4
+   3 |   7 |        2
+   4 |   8 |        1
+   5 |   9 |        2
+   7 |  10 |        2
+   7 |  11 |        3
+   9 |  12 |        5
+(11 rows)
+
+
+ pid | weight
+-----+--------
+   6 |      1
+   8 |      4
+  10 |      1
+  11 |      5
+  12 |      3
+(5 rows)
+
+
+ p  | recursiveaggregatedweight
+----+---------------------------
+  1 |                       144
+  2 |                        34
+  3 |                        34
+  4 |                         4
+  5 |                        30
+  6 |                         1
+  7 |                        17
+  8 |                         4
+  9 |                        15
+ 10 |                         1
+ 11 |                         5
+ 12 |                         3
+(12 rows)
+
+
+Problem 8.b
+CREATE FUNCTION
+ pid | sid | quantity
+-----+-----+----------
+   1 |   2 |        1
+   1 |   3 |        3
+   1 |   4 |        2
+   2 |   5 |        1
+   2 |   6 |        4
+   3 |   7 |        2
+   4 |   8 |        1
+   5 |   9 |        2
+   7 |  10 |        2
+   7 |  11 |        3
+   9 |  12 |        5
+(11 rows)
+
+
+ pid | weight
+-----+--------
+   6 |      1
+   8 |      4
+  10 |      1
+  11 |      5
+  12 |      3
+(5 rows)
+
+
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:196: NOTICE:  table "temp_weights" does not exist, skipping
+ p  | nonrecursiveaggregatedweight
+----+------------------------------
+  1 |                          144
+  2 |                           34
+  3 |                           34
+  4 |                            4
+  5 |                           30
+  6 |                            1
+  7 |                           17
+  8 |                            4
+  9 |                           15
+ 10 |                            1
+ 11 |                            5
+ 12 |                            3
+(12 rows)
+
+
+Problem 11
+CREATE TABLE
+INSERT 0 4
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+frequentSets(0)
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:406: NOTICE:  table "tset" does not exist, skipping
+ frequentsetswords
+-------------------
+ {}
+ {A}
+ {A,B}
+ {A,B,C}
+ {A,B,C,D}
+ {A,B,C,D,E}
+ {A,B,C,D,E,F}
+ {A,B,C,D,F}
+ {A,B,C,E}
+ {A,B,C,E,F}
+ {A,B,C,F}
+ {A,B,D}
+ {A,B,D,E}
+ {A,B,D,E,F}
+ {A,B,D,F}
+ {A,B,E}
+ {A,B,E,F}
+ {A,B,F}
+ {A,C}
+ {A,C,D}
+ {A,C,D,E}
+ {A,C,D,E,F}
+ {A,C,D,F}
+ {A,C,E}
+ {A,C,E,F}
+ {A,C,F}
+ {A,D}
+frequentSets(1)
+ frequentsetswords
+-------------------
+ {}
+ {A}
+ {A,B}
+ {A,B,C}
+ {A,B,C,D}
+ {A,B,C,D,E}
+ {A,B,C,E}
+ {A,B,C,E,F}
+ {A,B,C,F}
+ {A,B,D}
+ {A,B,D,E}
+ {A,B,E}
+ {A,B,E,F}
+ {A,B,F}
+ {A,C}
+ {A,C,D}
+ {A,C,D,E}
+ {A,C,E}
+ {A,C,E,F}
+ {A,C,F}
+ {A,D}
+ {A,D,E}
+ {A,E}
+ {A,E,F}
+ {A,F}
+ {B}
+ {B,C}
+frequentSets(2)
+ frequentsetswords
+-------------------
+ {}
+ {A}
+ {A,B}
+ {A,B,C}
+ {A,B,C,E}
+ {A,B,E}
+ {A,C}
+ {A,C,E}
+ {A,E}
+ {A,E,F}
+ {A,F}
+ {B}
+ {B,C}
+ {B,C,E}
+ {B,E}
+ {C}
+ {C,E}
+ {E}
+ {E,F}
+ {F}
+(20 rows)
+
+
+frequentSets(3)
+ frequentsetswords
+-------------------
+ {}
+ {A}
+ {A,E}
+ {E}
+(4 rows)
+
+
+frequentSets(4)
+ frequentsetswords
+-------------------
+ {}
+ {A}
+ {A,E}
+ {E}
+(4 rows)
+
+
+frequentSets(5)
+ frequentsetswords
+-------------------
+ {}
+(1 row)
+
+
+Problem 12
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:426: NOTICE:  table "graph" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+Problem 12.a
+CREATE FUNCTION
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:455: NOTICE:  function visit_edges() does not exist, skipping
+DROP FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+INSERT 0 4
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:535: NOTICE:  table "visited" does not exist, skipping
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:535: NOTICE:  table "stage_graph" does not exist, skipping
+ recursivehamiltonian
+----------------------
+ t
+(1 row)
+
+
+DELETE 4
+INSERT 0 5
+ recursivehamiltonian
+----------------------
+ f
+(1 row)
+
+
+Problem 12.b
+CREATE FUNCTION
+CREATE FUNCTION
+DROP FUNCTION
+CREATE FUNCTION
+DELETE 5
+INSERT 0 4
+ nonrecursivehamiltonian
+-------------------------
+ t
+(1 row)
+
+
+DELETE 4
+INSERT 0 5
+ nonrecursivehamiltonian
+-------------------------
+ f
+(1 row)
+
+
+DELETE 5
+INSERT 0 10
+ nonrecursivehamiltonian
+-------------------------
+ t
+(1 row)
+
+
+DELETE 10
+INSERT 0 9
+ nonrecursivehamiltonian
+-------------------------
+ f
+(1 row)
+
+
+Problem 14
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:687: NOTICE:  table "r" does not exist, skipping
+DROP TABLE
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:688: NOTICE:  table "s" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 5
+INSERT 0 6
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:707: NOTICE:  table "encodingofrands" does not exist, skipping
+CREATE TABLE
+INSERT 0 11
+CREATE FUNCTION
+CREATE FUNCTION
+ a | b
+---+---
+ 1 | 2
+ 1 | 1
+ 2 | 2
+(3 rows)
+
+
+Problem 16
+DROP TABLE
+CREATE TABLE
+INSERT 0 6
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:757: NOTICE:  table "encodingofr" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+INSERT 0 6
+DROP FUNCTION
+CREATE FUNCTION
+DROP FUNCTION
+CREATE FUNCTION
+ a |   bs   | sum_bs
+---+--------+--------
+ 2 | [2, 3] | 5
+ 3 | [2]    | 2
+(2 rows)
+
+
+Problem 17
+DROP TABLE
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 7
+INSERT 0 10
+Problem 17.a
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:821: NOTICE:  view "cogroup" does not exist, skipping
+DROP VIEW
+CREATE TYPE
+CREATE VIEW
+ keys |       co_group
+------+-----------------------
+    1 | ("{1,2,3}","{1,2,3}")
+    2 | ("{2,3}",{})
+    3 | ({2},{2})
+    4 | ({},"{1,2}")
+    5 | ({},"{1,2}")
+    6 | ({},"{4,5}")
+    7 | ({7},{})
+(7 rows)
+
+
+Problem 17.b
+ keys | unnest
+------+--------
+    1 |      1
+    1 |      2
+    1 |      3
+    3 |      2
+(4 rows)
+
+
+Problem 17.c
+psql:C:/Users/kiran/PycharmProjects/B561-ADC-IUB-Fall2021/Assignment_7/Submission/assignment7.sql:851: NOTICE:  view "cgd" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+ rk | sk
+----+----
+  1 |  6
+  2 |  6
+  3 |  6
+  7 |  1
+  7 |  3
+  7 |  4
+  7 |  5
+  7 |  6
+(8 rows)
+
+
+You are now connected to database "postgres" as user "postgres".
+DROP DATABASE
