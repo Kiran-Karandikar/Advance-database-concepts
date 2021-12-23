@@ -31,7 +31,7 @@ Database Concepts.
   expected output.
 - The folder `submission` will contain the final version developed towards the
   assignment.
-- `test_query.sql` contains all development code.
+- `test-query-postgres.sql` contains all development code.
 
 > Assignment 1: Assignment 1 Relational Databases, Expressing Queries and Constraints in SQL and in Tuple Relational Calculus (TRC).
 
