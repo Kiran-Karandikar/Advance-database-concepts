@@ -3,7 +3,13 @@
 This repo holds all the assignments developed towards the course B561 Advance
 Database Concepts.
 
-## Topics covered in this course
+### Table of contents
+
+- Topics[#topics]
+- Assignments[#assignments]
+- Useful Postgres commands[#useful-postgres-commands]
+
+## Topics
 
 - Database models and systems:
 	- especially relational, nested and object-relational, and semi-structured (
@@ -23,7 +29,7 @@ Database Concepts.
 - Elements of transaction management:
 	- concurrency and recovery
 
-### Repo structure
+### Assignments
 
 - Each directory contains the sql query's developed towards the specific
   assignment
@@ -49,12 +55,13 @@ Database Concepts.
 
 > Assignment 8: Concurrency control, Transaction scheduling
 
-### List of Postgres commands
+### Useful Postgres commands
 
 - Basic commands[#basic-commands]
 - User Management[#user-management]
 
-> #### **_Basic commands_**
+#### **_Basic commands_**
+---
 
 ##### List all tables in database: `\l`
 
@@ -63,8 +70,10 @@ Database Concepts.
 ##### Connect To database: `\c database_name`
 
 ##### Clear screen: `\! cls`
+---
 
-> #### **_User Management_**
+##### **_User Management_**
+---
 
 ##### create user: `create user user_name with password 'test123';`
 
