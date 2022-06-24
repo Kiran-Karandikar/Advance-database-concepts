@@ -1,3 +1,37 @@
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+[contributors-shield]: https://img.shields.io/github/contributors/kiran-karandikar/Advance-database-concepts?style=for-the-badge
+
+[contributors-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/graphs/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[forks-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/network
+
+[stars-shield]: https://img.shields.io/github/stars/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[stars-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[issues-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/issues
+
+[license-shield]: https://img.shields.io/github/license/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[license-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/blob/master/LICENSE
+
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
+[linkedin-url]: https://linkedin.com/in/kiran-karandikar
+
+---------
+
+ 
 # Advance database concepts
 
 This repo holds all the assignments developed towards the course B561 Advance
@@ -78,3 +112,15 @@ Database Concepts.
 ##### create user: `create user user_name with password 'test123';`
 
 ##### alter user: `alter user user_name with SUPERUSER;`
+
+### Other projects
+
+Check out the other stuff I've worked upon
+
+- **AML-Home-Credit-Default-Risk** : [Predicting how capable each applicant is of repaying a loan \(Kaggle Challenge\).](https://github.com/Kiran-Karandikar/AML-Home-Credit-Default-Risk)
+
+- **Exercise-performance-analysis** : [Prototype exercise volume prediction using machine learning models.](https://github.com/Kiran-Karandikar/Exercise-performance-analysis)
+
+- **flask-app-template** : [Simple, reusable, minimalistic, configurable flask app.](https://github.com/Kiran-Karandikar/flask-app-template)
+
+- **flask-oauth2-wrike-api** : [A sample Flask app to authenticate with Wrike as a third-party OAuth2 provider.](https://github.com/Kiran-Karandikar/flask-oauth2-wrike-api)
