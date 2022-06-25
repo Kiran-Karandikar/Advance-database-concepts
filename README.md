@@ -113,6 +113,7 @@ Database Concepts.
 
 ##### alter user: `alter user user_name with SUPERUSER;`
 
+
 ### Other projects
 
 Check out the other stuff I've worked upon
