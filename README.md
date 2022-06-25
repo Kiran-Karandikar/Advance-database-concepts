@@ -116,11 +116,12 @@ Database Concepts.
 
 
 
+
 ### Other projects
 
 Check out the other stuff I've worked upon.
 
-- ___Data science realted___
+- ___AI/ML/Data Science___
 
   - **AML-Home-Credit-Default-Risk** : [Predicting how capable each applicant is of repaying a loan \(Kaggle Challenge\).](https://github.com/Kiran-Karandikar/AML-Home-Credit-Default-Risk)
 
