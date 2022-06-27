@@ -55,6 +55,7 @@
 </div>
 
 <!-- BADGES.MD Finish -->
+<!-- BADGES.MD Finish -->
 # Advance database concepts
 
 This repo holds all the assignments developed towards the course B561 Advance
@@ -135,6 +136,7 @@ Database Concepts.
 ##### create user: `create user user_name with password 'test123';`
 
 ##### alter user: `alter user user_name with SUPERUSER;`
+
 
 
 
