@@ -1,3 +1,60 @@
+<div id="top"></div>
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+[contributors-shield]: https://img.shields.io/github/contributors/kiran-karandikar/Advance-database-concepts?style=for-the-badge
+
+[contributors-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/graphs/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[forks-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/network
+
+[stars-shield]: https://img.shields.io/github/stars/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[stars-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[issues-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/issues
+
+[license-shield]: https://img.shields.io/github/license/Kiran-Karandikar/Advance-database-concepts?style=for-the-badge
+
+[license-url]: https://github.com/Kiran-Karandikar/Advance-database-concepts/blob/master/LICENSE
+
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
+[linkedin-url]: https://linkedin.com/in/kiran-karandikar
+
+---------
+
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+<h3 align="center">Advance-database-concepts</h3>
+  <p align="center">
+    This repo holds all the assignments developed towards the course B561 Advance Database Concepts.    
+    <br />    
+    <a href="https://kiran-karandikar.github.io/Advance-database-concepts"><strong>Preview</strong></a>
+    <br />
+    <a href="https://github.com/kiran-karandikar/Advance-database-concepts"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/kiran-karandikar/Advance-database-concepts">View Demo</a>
+    ·
+    <a href="https://github.com/kiran-karandikar/Advance-database-concepts/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/kiran-karandikar/Advance-database-concepts/issues">Request Feature</a>
+  </p>
+</div>
+
+<!-- BADGES.MD Finish -->
 # Advance database concepts
 
 This repo holds all the assignments developed towards the course B561 Advance
@@ -78,6 +135,7 @@ Database Concepts.
 ##### create user: `create user user_name with password 'test123';`
 
 ##### alter user: `alter user user_name with SUPERUSER;`
+
 
 
 
